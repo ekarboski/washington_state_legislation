@@ -1,6 +1,6 @@
 from selenium.webdriver import (Chrome, Firefox)
 import pandas as pd
-
+import urllib
 from bs4 import BeautifulSoup
 
 
@@ -40,3 +40,15 @@ def scrape_bill_topic_table(year):
             data.append(row_data)
 
     return pd.DataFrame(data)
+
+
+def scrape_bill_url(url):
+    '''Scrape the bill url and put all text into one string.'''
+
+    html = urllib.request.urlopen(url).read()
+    soup = BeautifulSoup(html, "lxml")
+    raw_text = soup.get_text()
+    lines = [l.strip() for l in raw_text.splitlines()]
+    phrases = [phrase.strip() for line in lines for phrase in line.split("  ")]
+    text = '\n'.join([phrase for phrase in phrases])
+    return text
