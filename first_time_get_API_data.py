@@ -2,7 +2,7 @@ import psycopg2 as pg2
 import pandas as pd
 import sqlalchemy
 import functools
-from web_scrape_functions import scrape_bill_topic_table
+from web_scrape_functions import scrape_bill_topic_table, scrape_bill_url
 from WA_state_API_functions import get_bill_data, get_sponsor_data, get_committee_data, get_committee_member_data, get_and_reorganize_rollcall_data
 
 def save_bill_data_STEP_ONE():
@@ -150,6 +150,44 @@ def save_topic_data_STEP_FIVE():
 
     for df in topic_dfs:
         df.to_sql('topic_scrape', con, if_exists='append', index=False)
+        
+        
+        
+def save_bill_text_data_STEP_SIX():
+    '''For every bill in bill_df scrape the url provided in the htm_url column.
+    
+    Table created: bill_text_scrape
+    ''' 
+    # Create connection to wa_leg_raw postgres database
+    engine = create_engine('postgresql://emilykarboski@localhost:5432/wa_leg_raw')
+    con = engine.connect()
+    
+    # Load bill data from bill_api postgres table
+    bill_df = pd.read_sql_query('select * from "bill_api"',con=engine)
+
+    # Scrape topic data and put in postgres table
+    bill_text_matrix = []
+    count = 0
+    for bill_id, biennium, url in zip(bill_df['bill_id'], bill_df['biennium'], bill_df['htm_url']):
+        
+        try: 
+            row = []
+            bill_text = scrape_bill_url(url)
+            row.append(bill_id)
+            row.append(biennium)
+            row.append(bill_text)
+            bill_text_matrix.append(row)
+            print(count)
+            count += 1
+        except:
+            print(count)
+            count += 1
+            continue
+        
+    bill_text_df = pd.DataFrame(bill_text_matrix)
+    bill_text_df.columns = ['bill_id', 'biennium', 'bill_text']
+    
+    bill_text_df.to_sql('bill_text_api', con, if_exists='append', index=False)
 
 
 

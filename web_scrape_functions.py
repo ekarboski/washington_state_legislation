@@ -45,8 +45,11 @@ def scrape_bill_topic_table(year):
 def scrape_bill_url(url):
     '''Scrape the bill url and put all text into one string.'''
 
+    url = url.replace(' ', '%20')
     html = urllib.request.urlopen(url).read()
     soup = BeautifulSoup(html, "lxml")
+    for script in soup(["script", "style"]):
+        script.extract()
     raw_text = soup.get_text()
     lines = [l.strip() for l in raw_text.splitlines()]
     phrases = [phrase.strip() for line in lines for phrase in line.split("  ")]
