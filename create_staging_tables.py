@@ -5,8 +5,8 @@ import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
 
 
-
-def create_staging_legislator_df():
+# staging_legislator function
+def create_staging_legislator_df(vote_df, committee_member_df):
     """Merge votes_df, committee_df and missing_legislator_info_df and clean data to create legislator_df
     
     Input
@@ -14,11 +14,6 @@ def create_staging_legislator_df():
     committee_member_df: pandas dataframe loaded from wa_leg_raw database, committee_member_api table
     missing_legislator_info_df: pandas dataframe loaded missing_legislators.csv
     """
-
-    engine = create_engine('postgresql://localhost:5432/wa_leg_raw')
-    vote_df = pd.read_sql_query('select * from "vote_api"',con=engine)
-    committee_member_df = pd.read_sql_query('select * from "committee_member_api"',con=engine)
-    
     leg_info_from_vote_df = vote_df.loc[:, ['biennium', 'voter_id', 'voter_name', 'voting_agency']]
     leg_info_from_vote_df.drop_duplicates(keep='first', inplace=True)
     
@@ -75,8 +70,6 @@ def create_staging_legislator_df():
     legislator_df['district'] = legislator_df['district'].apply(int)
     
     return legislator_df
-
-
 
 
 
@@ -161,7 +154,7 @@ class CreateStagingLegislatorDataframe(BaseEstimator, TransformerMixin):
             return x['district']
         
         
-        
+# staging_vote function       
 def create_staging_vote_df():
     '''Create statging_vote_df from raw_vote_df'''
 
@@ -200,5 +193,77 @@ def create_staging_vote_df():
     vote_df['voting_agency'] = vote_df['voting_agency'].apply(change_agency_to_int)
 
     return vote_df
+
+
+
+
+# staging_bill functions
+def create_secondary_sponsor_column(sponsor_df):
+    '''Create a column named secondary_sponsors that contains a list of secondary sponsors
+    
+    Input:
+    sponsor_df: pandas dataframe retrieved from wa_leg raw database, sponsor_api table
+    '''
+    # Create dictionary with bill_id and biennium as keys and list of secondary sponsors as values
+    s = defaultdict(list)
+    for s_id, s_type, biennium, bill_id in zip(sponsor_df['sponsor_id'], 
+                                               sponsor_df['sponsor_type'],
+                                               sponsor_df['biennium'], 
+                                               sponsor_df['bill_id']):
+        if s_type == 'Secondary':
+            s[(bill_id, biennium)].append(s_id)
+            
+    for k, v in s.items():
+        s[k] = list(set(v))
+
+    # Create a matrix that can be turned in to a dataframe. Column one is bill_id, column two is 
+    # biennium, column three is the list of secondary sponsors
+    sponsor_matrix = []
+    for k, v in s.items():
+        row = []
+        row.append(k[0])
+        row.append(k[1])
+        row.append(v)
+        sponsor_matrix.append(row)
+        
+    secondary_sponsors_df = pd.DataFrame(sponsor_matrix)
+    secondary_sponsors_df.columns = ['bill_id', 'biennium', 'secondary_sponsors']
+            
+    sponsor_df_reformatted = sponsor_df[sponsor_df['sponsor_type'] == 'Primary']
+    sponsor_df_reformatted['bill_num'] = sponsor_df_reformatted['bill_id'].apply(lambda x: x.split()[1])
+    sponsor_df_reformatted['bill_num_unique'] = sponsor_df_reformatted['biennium'] + ' ' + sponsor_df_reformatted['bill_num']
+    sponsor_df_reformatted = sponsor_df_reformatted.rename(index=str, columns={"sponsor_id": "primary_sponsor_id"})
+    sponsor_df_reformatted = sponsor_df_reformatted.drop(['sponsor_type', 'sponsor_order', 'sponsor_last_name', 
+                                 'sponsor_long_name', 'sponsor_first_name', 'sponsor_name'], axis = 1)
+    
+    sponsor_df_merged = sponsor_df_reformatted.merge(secondary_sponsors_df, how='outer', on=['bill_id', 'biennium'])
+    
+    # filter out repeating bills
+    unique_bill_nums = []
+    unique_bill_rows = []
+    for i, row in sponsor_df_merged.iterrows():
+        if row['bill_num_unique'] not in unique_bill_nums:
+            unique_bill_nums.append(row['bill_num_unique'])
+            unique_bill_rows.append(row)
+            
+    return pd.DataFrame(unique_bill_rows)
+
+
+def merge_sponsor_data_to_bill_df(bill_df, sponsor_df):
+    '''Join sponsor_df to bill_df and output the merged pandas dataframe.
+    Input
+    bill_df: pandas dataframe retrieved from wa_leg raw database, bill_api table
+    sponsor_df: pandas dataframe retrieved from wa_leg raw database, sponsor_api table
+    '''
+    sponsor_df_unique = create_secondary_sponsor_column(sponsor_df)
+    bill_df['bill_num'] = bill_df['bill_id'].apply(lambda x: x.split()[1] if type(x) == str else x)
+    bill_df['bill_num_unique'] = bill_df['biennium'] + ' ' + bill_df['bill_num']
+    
+    MERGED = bill_df.merge(sponsor_df_unique, how='left', on=['bill_num_unique', 'biennium'], suffixes=['', '_sp'])
+    MERGED = MERGED.drop(['bill_id_sp', 'bill_num_sp'], axis=1)
+    MERGED = MERGED[MERGED['primary_sponsor_id'].notnull()]
+    return MERGED
+
+
 
     
