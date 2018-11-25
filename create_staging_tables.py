@@ -273,6 +273,9 @@ def create_staging_unique_vote_dates_df(staging_bill_df, staging_vote_df):
     but before, the vote date. Set the unique_id of that bill to the unique_id of that vote. This will be use to 
     later join the bill_df to the vote_df.'''
     
+    staging_bill_df['htm_create_date'] =        pd.to_datetime(staging_bill_df['htm_create_date'])
+    staging_bill_df['htm_last_modified_date'] = pd.to_datetime(staging_bill_df['htm_last_modified_date'])
+    
     unique_vote_dates = staging_vote_df[['bill_unique', 'vote_date']]
     unique_vote_dates.drop_duplicates(keep='first', inplace=True)
     unique_vote_dates = unique_vote_dates.reset_index()
@@ -280,22 +283,25 @@ def create_staging_unique_vote_dates_df(staging_bill_df, staging_vote_df):
     unique_vote_dates['unique_id'] = np.nan
     staging_bill_df['unique_id'] = np.linspace(1, len(staging_bill_df), len(staging_bill_df))
     
-    count = 0
+
     for i1, row in unique_vote_dates.iterrows():
         time_diffs = {}
         bill_options = staging_bill_df[staging_bill_df['bill_unique'] == row['bill_unique']]
+        
         for i2, option in bill_options.iterrows():
             time_diff = option['htm_create_date'] - row['vote_date']
+            
             if time_diff <= pd.to_timedelta('0'):
                 time_diffs[time_diff] = option['unique_id']
             if time_diff > pd.to_timedelta('0'):
                 time_diff -= pd.to_timedelta('-1000 days')
                 time_diffs[time_diff] = option['unique_id']
+                
         if len(time_diffs) > 0:
             bill_voted_on = time_diffs[max(time_diffs)]
             unique_vote_dates.iloc[i1, -1] = bill_voted_on
+            
     return unique_vote_dates
-
 
 def create_staging_merged_initial_df():
     '''Create merged_initial by merging staging_bill_df and staging_vote_df on the bill_unique field.
