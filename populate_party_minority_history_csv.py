@@ -6,7 +6,7 @@ The table below was created manually using the report "State of Washington Membe
 1889-2018". The report can be found here: http://leg.wa.gov/History/Legislative/Documents/MembersOfLeg2018.pdf.
 '''
 
-party_minority_history = [{'biennium': '1991-92', 'agency': 'Senate', 'minority_party': 'R'},
+party_minority_history = [{'biennium': '1991-92', 'agency': 'Senate', 'minority_party': 'D'},
             {'biennium': '1991-92', 'agency': 'House', 'minority_party': 'R'},
 
             {'biennium': '1993-94', 'agency': 'Senate', 'minority_party': 'R'},
