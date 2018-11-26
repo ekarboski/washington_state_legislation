@@ -303,15 +303,37 @@ def create_staging_unique_vote_dates_df(staging_bill_df, staging_vote_df):
             
     return unique_vote_dates
 
-def create_staging_merged_initial_df():
-    '''Create merged_initial by merging staging_bill_df and staging_vote_df on the bill_unique field.
+def create_staging_merged_initial_df(staging_vote_df, staging_bill_df):
+    '''Create merged_initial by merging staging_bill_df and staging_vote_df on the unique_id field created in 
+    create_staging_unique_vote_dates_df.
     Input
     staging_bill_df: pandas dataframe loaded from wa_leg_staging database, bill table
     staging_vote_df:pandas dataframe loaded from wa_leg_staging database, vote table
     '''
-    staging_vote_df = pd.read_sql_query('select * from "vote"',con=engine)
-    staging_bill_df = pd.read_sql_query('select * from "bill"',con=engine)
-    staging_bill_df['bill_unique'] = staging_bill_df['biennium'] + ' ' + staging_bill_df['bill_id']
-    return staging_vote_df.merge(staging_bill_df, how='left', on='bill_unique')
+    unique_vote_dates, staging_bill_df_with_unique_ids = create_staging_unique_vote_dates_df(staging_vote_df, staging_bill_df)
+    unique_vote_dates = unique_vote_dates.drop('index', axis=1)
+    staging_vote_df_with_unique_ids = staging_vote_df.merge(unique_vote_dates, how='left', on=['bill_unique', 'vote_date'])
+    return staging_vote_df_with_unique_ids.merge(staging_bill_df_with_unique_ids, how='left', on=['unique_id', 'bill_unique'])
+
+
+def create_staging_bill_text_df(merged_initial_df):
+    '''Create staging_bill_text using unique bills from merged_initial_df and scraping the urls.
+    Input
+    merged_initial_df: pandas dataframe loaded from wa_leg_staging database, merged_initial table
+    '''
+    
+    bills_to_scrape_df = merged_initial_df[['unique_id', 'htm_url']]
+    bills_to_scrape_df.drop_duplicates(keep='first', inplace=True)
+    bills_to_scrape_df['bill_text'] = ''
+    bills_to_scrape_df.reset_index(inplace=True)
+    
+    for i, row in bills_to_scrape_df.iterrows():
+        url = row['htm_url']
+        try: 
+            bill_text = scrape_bill_url(url)
+            bills_to_scrape_df.iloc[i,-1] = bill_text
+        except:
+            continue
+    return bills_to_scrape_df
 
     
