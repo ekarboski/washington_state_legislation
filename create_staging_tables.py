@@ -6,8 +6,7 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from collections import defaultdict
 
 
-# staging_legislator function
-def create_staging_legislator_df(vote_df, committee_member_df):
+def create_staging_legislator_df_STEP_ONE(vote_df, committee_member_df, missing_leg_info_df):
     """Merge votes_df, committee_df and missing_legislator_info_df and clean data to create legislator_df
     
     Input
@@ -26,7 +25,6 @@ def create_staging_legislator_df(vote_df, committee_member_df):
     legislator_df = leg_info_from_vote_df.merge(leg_info_from_cm_df, how='outer', on='voter_id')
     legislator_df.drop_duplicates(keep="first", inplace=True)
     
-    missing_leg_info_df = pd.read_csv('missing_legislators.csv', sep='|')
     missing_leg_info_df['district'] = missing_leg_info_df['district'].apply(str)
     missing_leg_info_df['voter_id'] = missing_leg_info_df['voter_id'].apply(str)
     
@@ -155,13 +153,10 @@ class CreateStagingLegislatorDataframe(BaseEstimator, TransformerMixin):
             return x['district']
         
         
-# staging_vote function       
-def create_staging_vote_df():
+      
+def create_staging_vote_df_STEP_TWO(vote_df):
     '''Create statging_vote_df from raw_vote_df'''
 
-    engine = create_engine('postgresql://localhost:5432/wa_leg_raw')
-    con = engine.connect()
-    vote_df = pd.read_sql_query('select * from "vote_api"',con=engine)
     vote_df['bill_unique'] = vote_df['biennium'] + ' ' + vote_df['bill_id']
 
 
@@ -198,7 +193,7 @@ def create_staging_vote_df():
 
 
 
-# staging_bill functions
+
 def create_secondary_sponsor_column(sponsor_df):
     '''Create a column named secondary_sponsors that contains a list of secondary sponsors
     
@@ -250,7 +245,7 @@ def create_secondary_sponsor_column(sponsor_df):
     return pd.DataFrame(unique_bill_rows)
 
 
-def create_staging_bill_df(bill_df, sponsor_df):
+def create_staging_bill_df_STEP_THREE(bill_df, sponsor_df):
     '''Join sponsor_df to bill_df and output the merged pandas dataframe.
     Input
     bill_df: pandas dataframe retrieved from wa_leg raw database, bill_api table
@@ -266,7 +261,7 @@ def create_staging_bill_df(bill_df, sponsor_df):
     return MERGED
 
 
-def create_staging_unique_vote_dates_df(staging_bill_df, staging_vote_df):
+def create_staging_unique_vote_dates_df_STEP_FOUR(staging_bill_df, staging_vote_df):
     '''Identify the exact bill that the legislators voted on. Create a dataframe that conists of all vote_date 
     and bill_unique pairs. Create a null unique_id field that labels each bill with a unique ID, and begins as 
     null for unique_vote_dates. For each row in unique_vote_dates identify the bill that was created closest to, 
@@ -303,7 +298,7 @@ def create_staging_unique_vote_dates_df(staging_bill_df, staging_vote_df):
             
     return unique_vote_dates
 
-def create_staging_merged_initial_df(staging_vote_df, staging_bill_df):
+def create_staging_merged_initial_df_STEP_FIVE(staging_vote_df, staging_bill_df):
     '''Create merged_initial by merging staging_bill_df and staging_vote_df on the unique_id field created in 
     create_staging_unique_vote_dates_df.
     Input
@@ -316,7 +311,7 @@ def create_staging_merged_initial_df(staging_vote_df, staging_bill_df):
     return staging_vote_df_with_unique_ids.merge(staging_bill_df_with_unique_ids, how='left', on=['unique_id', 'bill_unique'])
 
 
-def create_staging_bill_text_df(merged_initial_df):
+def create_staging_bill_text_df_STEP_SIX(merged_initial_df):
     '''Create staging_bill_text using unique bills from merged_initial_df and scraping the urls.
     Input
     merged_initial_df: pandas dataframe loaded from wa_leg_staging database, merged_initial table
@@ -337,7 +332,7 @@ def create_staging_bill_text_df(merged_initial_df):
     return bills_to_scrape_df
 
 
-def create_staging_merged_final_df(merged_initial_df, bill_text_df, legislator_df):
+def create_staging_merged_final_df_STEP_SEVEN(merged_initial_df, bill_text_df, legislator_df):
     '''Create merged_final pandas dataframe. This dataframe contains all necessary data and is ready for 
     cleaning.
     Input
