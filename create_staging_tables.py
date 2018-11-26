@@ -336,4 +336,28 @@ def create_staging_bill_text_df(merged_initial_df):
             continue
     return bills_to_scrape_df
 
+
+def create_staging_merged_final_df(merged_initial_df, bill_text_df, legislator_df):
+    '''Create merged_final pandas dataframe. This dataframe contains all necessary data and is ready for 
+    cleaning.
+    Input
+    merged_initial_df: pandas dataframe loaded from wa_leg_staging database, merged_inital table
+    bill_text_df: pandas dataframe loaded from wa_leg_staging database, bill_text table
+    legislator_df: pandas dataframe loaded from wa_leg_staging database, legislator table
+    '''
+    merged_second_df = merged_initial_df.merge(bill_text_df, how='left', on=['unique_id', 'htm_url'])
+    
+    def change_agency_to_int(agency):
+        if agency == 'House':
+            return 0
+        if agency == 'Senate':
+            return 1
+    
+    legislator_df['agency'] = legislator_df['agency'].apply(change_agency_to_int)
+    merged_final = merged_second_df.merge(legislator_df, 
+                               how='left', 
+                               left_on=['voter_id', 'voting_agency'], 
+                               right_on=['id', 'agency'])
+    
+    return merged_final
     
