@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
 from collections import defaultdict
+from web_scrape_functions import scrape_bill_url
 
 
 def create_staging_legislator_df_STEP_ONE(vote_df, committee_member_df, missing_leg_info_df):
@@ -261,7 +262,7 @@ def create_staging_bill_df_STEP_THREE(bill_df, sponsor_df):
     return MERGED
 
 
-def create_staging_unique_vote_dates_df_STEP_FOUR(staging_bill_df, staging_vote_df):
+def create_staging_unique_vote_dates_df(staging_vote_df, staging_bill_df):
     '''Identify the exact bill that the legislators voted on. Create a dataframe that conists of all vote_date 
     and bill_unique pairs. Create a null unique_id field that labels each bill with a unique ID, and begins as 
     null for unique_vote_dates. For each row in unique_vote_dates identify the bill that was created closest to, 
@@ -296,9 +297,9 @@ def create_staging_unique_vote_dates_df_STEP_FOUR(staging_bill_df, staging_vote_
             bill_voted_on = time_diffs[max(time_diffs)]
             unique_vote_dates.iloc[i1, -1] = bill_voted_on
             
-    return unique_vote_dates
+    return unique_vote_dates, staging_bill_df
 
-def create_staging_merged_initial_df_STEP_FIVE(staging_vote_df, staging_bill_df):
+def create_staging_merged_initial_df(staging_vote_df, staging_bill_df):
     '''Create merged_initial by merging staging_bill_df and staging_vote_df on the unique_id field created in 
     create_staging_unique_vote_dates_df.
     Input
@@ -311,7 +312,7 @@ def create_staging_merged_initial_df_STEP_FIVE(staging_vote_df, staging_bill_df)
     return staging_vote_df_with_unique_ids.merge(staging_bill_df_with_unique_ids, how='left', on=['unique_id', 'bill_unique'])
 
 
-def create_staging_bill_text_df_STEP_SIX(merged_initial_df):
+def create_staging_bill_text_df_STEP_FOUR(merged_initial_df):
     '''Create staging_bill_text using unique bills from merged_initial_df and scraping the urls.
     Input
     merged_initial_df: pandas dataframe loaded from wa_leg_staging database, merged_initial table
@@ -332,7 +333,7 @@ def create_staging_bill_text_df_STEP_SIX(merged_initial_df):
     return bills_to_scrape_df
 
 
-def create_staging_merged_final_df_STEP_SEVEN(merged_initial_df, bill_text_df, legislator_df):
+def create_staging_merged_final_df_STEP_FIVE(staging_vote_df, staging_bill_df, bill_text_df, legislator_df):
     '''Create merged_final pandas dataframe. This dataframe contains all necessary data and is ready for 
     cleaning.
     Input
@@ -340,6 +341,7 @@ def create_staging_merged_final_df_STEP_SEVEN(merged_initial_df, bill_text_df, l
     bill_text_df: pandas dataframe loaded from wa_leg_staging database, bill_text table
     legislator_df: pandas dataframe loaded from wa_leg_staging database, legislator table
     '''
+    merged_initial_df = create_staging_merged_initial_df(staging_vote_df, staging_bill_df)
     merged_second_df = merged_initial_df.merge(bill_text_df, how='left', on=['unique_id', 'htm_url'])
     
     def change_agency_to_int(agency):
@@ -354,5 +356,8 @@ def create_staging_merged_final_df_STEP_SEVEN(merged_initial_df, bill_text_df, l
                                left_on=['voter_id', 'voting_agency'], 
                                right_on=['id', 'agency'])
     
+    merged_final = merged_final.drop(['sequence_number', 'unique_id', 'type', 
+                                      'voter_name', 'htm_last_modified_date', 'description', 
+                                      'bill_num_unique', 'bill_num', 'index', 'class'], axis = 1)
     return merged_final
     
