@@ -333,7 +333,7 @@ def create_staging_bill_text_df_STEP_FOUR(merged_initial_df):
     return bills_to_scrape_df
 
 
-def create_staging_merged_final_df_STEP_FIVE(staging_vote_df, staging_bill_df, bill_text_df, legislator_df):
+def create_staging_merged_final_df_STEP_FIVE(staging_vote_df, staging_bill_df, legislator_df):
     '''Create merged_final pandas dataframe. This dataframe contains all necessary data and is ready for 
     cleaning.
     Input
@@ -342,7 +342,7 @@ def create_staging_merged_final_df_STEP_FIVE(staging_vote_df, staging_bill_df, b
     legislator_df: pandas dataframe loaded from wa_leg_staging database, legislator table
     '''
     merged_initial_df = create_staging_merged_initial_df(staging_vote_df, staging_bill_df)
-    merged_second_df = merged_initial_df.merge(bill_text_df, how='left', on=['unique_id', 'htm_url'])
+    # merged_second_df = merged_initial_df.merge(bill_text_df, how='left', on=['unique_id', 'htm_url'])
     
     def change_agency_to_int(agency):
         if agency == 'House':
@@ -351,13 +351,13 @@ def create_staging_merged_final_df_STEP_FIVE(staging_vote_df, staging_bill_df, b
             return 1
     
     legislator_df['agency'] = legislator_df['agency'].apply(change_agency_to_int)
-    merged_final = merged_second_df.merge(legislator_df, 
+    merged_final = merged_initial_df.merge(legislator_df, 
                                how='left', 
                                left_on=['voter_id', 'voting_agency'], 
                                right_on=['id', 'agency'])
     
-    merged_final = merged_final.drop(['sequence_number', 'unique_id', 'type', 
+    merged_final = merged_final.drop(['sequence_number', 'type', 
                                       'voter_name', 'htm_last_modified_date', 'description', 
-                                      'bill_num_unique', 'bill_num', 'index', 'class'], axis = 1)
+                                      'bill_num_unique', 'bill_num', 'class'], axis = 1)
     return merged_final
     
