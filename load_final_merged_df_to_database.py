@@ -13,10 +13,19 @@ legislator_df =     pd.read_sql_query('select * from "legislator"',con=engine)
 
 MERGED_final = create_staging_merged_final_df_STEP_SIX(merged_initial_df, bill_text_df, legislator_df)
 
-intervals = np.linspace(950000, 3170000, 223, dtype=int)
+# MERGED_final.iloc[0:10000, :].to_sql('merged_final', con, if_exists='replace', index=True)
+
+# 1130000-1400000 skipped
+# 1900000-1910000 skipped
+# 1930000-1940000 skipped
+# 2370000-2380000 skipped
+# 2530000-2540000 skipped
+intervals = np.linspace(2380000, 3170000, 80, dtype=int)
+in_database = []
 
 for interval in intervals:
-    MERGED_final.iloc[interval:interval+10000, :].to_sql('merged_final', con, if_exists='append', index=False)
-    print((interval, interval + 10000))
+    MERGED_final.iloc[interval:interval+10000, :].to_sql('merged_final', con, if_exists='append', index=True)
+    in_database.append((interval, interval + 10000))
+    print(in_database[-1])
 
 con.close()
