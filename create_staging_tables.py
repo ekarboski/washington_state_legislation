@@ -386,6 +386,17 @@ def load_and_clean_party_minority_history_df():
 
 
 def clean_merged_final_STEP_SIX(MERGED_final):
+    '''Create a MERGED_final pandas dataframe and clean columns so that data type is correct. Feature
+    engineer several new features such as is_primary_sponsor.
+    
+    Parameters
+    ----------
+    MERGED_final: pandas dataframe created with create_staging_merged_final_df_STEP_FIVE
+
+    Output
+    ------
+    clean_df: pandas dataframe
+    '''
     
     MERGED_valid = MERGED_final[MERGED_final['primary_sponsor_id'].notnull()]
     clean_df = MERGED_valid.drop(['name', 'first_name', 'last_name', 'id', 
@@ -430,8 +441,10 @@ def clean_merged_final_STEP_SIX(MERGED_final):
         ps_agency = row['sponsor_agency']
         subset_leg = legislator_df[(legislator_df['id'] == int(ps_id)) & 
                                    (legislator_df['agency'] == int(ps_agency))]
-        sponsor_party = subset_leg.iloc[0, 4]
-        return sponsor_party
+        if len(subset_leg) > 0:
+            sponsor_party = subset_leg.iloc[0, 4]
+            return sponsor_party
+        else: return 2
 
 #     def find_first_read_date(bill_text):
 #         text_lst = bill_text.split('Read first time ')
