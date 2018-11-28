@@ -385,7 +385,7 @@ def load_and_clean_party_minority_history_df():
     return minority_hist
 
 
-def clean_merged_final_STEP_SIX(MERGED_final):
+def clean_merged_final_STEP_SIX(MERGED_final, legislator_df):
     '''Create a MERGED_final pandas dataframe and clean columns so that data type is correct. Feature
     engineer several new features such as is_primary_sponsor.
     
@@ -458,3 +458,48 @@ def clean_merged_final_STEP_SIX(MERGED_final):
     clean_df = clean_df.drop(['primary_sponsor_id', 'secondary_sponsors', 'htm_create_date', 'year'], axis=1)
     
     return clean_df
+
+
+def create_rep_score(staging_bill_df, legislator_df):
+    '''Create a dataframe with bill_num_unique, secondary_sponsors, primary_sponsor_id, and rep_score.
+    rep_score is a ratio of number of republican sponsors (primary and secondary) to total number of sponsors.
+
+    Input
+    staging_bill_df: pandas dataframe loaded from wa_leg_staging database, bill table
+    legislator_df: pandas dataframe loaded from wa_leg_staging database, legislator table'''
+
+    rep_score_df = staging_bill_df[['secondary_sponsors', 'bill_num_unique', 'primary_sponsor_id']]
+    rep_score_df.drop_duplicates(keep='first', inplace=True)
+
+    def make_sec_sponsors_a_list(sponsors):
+        '''Secondary sponsors are in a string. The string will be split in to a list of sponsor ids.'''
+        if type(sponsors) == str:
+            clean_sponsors = sponsors.strip('{}')
+            id_list = clean_sponsors.split(',')
+            return id_list
+        else: 
+            return sponsors
+
+    rep_score_df['secondary_sponsors'] = rep_score_df['secondary_sponsors'].apply(make_sec_sponsors_a_list)
+
+    def create_bill_rep_score(row):
+        '''Return # of republican sponsors / total sponsors. If there are no secondary sponsors return -1 so that
+        later, when this table is joined with merged_final, the primary sponsor party can fill this field.'''
+        sponsors = row['secondary_sponsors']
+        if type(sponsors) == list:
+            sponsors.append(row['primary_sponsor_id'])
+
+            sponsor_parties = []
+            for s in sponsors:
+                subset_leg = legislator_df[(legislator_df['id'] == int(s))]
+                if len(subset_leg) > 0:
+                    sponsor_party = sum(subset_leg.iloc[:, 4]) / len(subset_leg)
+                    sponsor_parties.append(sponsor_party)
+            bill_rep_score = np.mean(sponsor_parties)
+            return bill_rep_score
+        else:
+            return -1
+
+    rep_score_df['rep_score'] = rep_score_df.apply(create_bill_rep_score, axis=1)
+
+    return rep_score_df
