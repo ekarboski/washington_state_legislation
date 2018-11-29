@@ -460,7 +460,7 @@ def clean_merged_final_STEP_SIX(MERGED_final, legislator_df):
     return clean_df
 
 
-def create_rep_score(staging_bill_df, legislator_df):
+def create_rep_score_STEP_SEVEN(staging_bill_df, legislator_df):
     '''Create a dataframe with bill_num_unique, secondary_sponsors, primary_sponsor_id, and rep_score.
     rep_score is a ratio of number of republican sponsors (primary and secondary) to total number of sponsors.
 
@@ -498,8 +498,38 @@ def create_rep_score(staging_bill_df, legislator_df):
             bill_rep_score = np.mean(sponsor_parties)
             return bill_rep_score
         else:
-            return -1
+            return None
 
     rep_score_df['rep_score'] = rep_score_df.apply(create_bill_rep_score, axis=1)
 
     return rep_score_df
+
+
+def create_loyalty_scores_df(clean_merged):
+    '''Calculate loyalty scores for each representative. 
+    Loyalty is calculated by taking'''
+    all_voters = clean_merged['voter_id'].unique()
+    loyalty_scores_list = []
+    
+    for voter in all_voters:
+        loyalty_scores_dct = {}
+        loyalty_scores_dct['voter_id'] = voter
+        votes = clean_merged[clean_merged['voter_id'] == voter]
+        loyalties = []
+        for i, row in votes.iterrows():
+            weight = np.absolute(row['rep_score'] - row['dem_score'])
+            leg_party = row['party']
+            bill_party = round(row['rep_score'])
+
+            if leg_party == bill_party:
+                voted_with_party = 1
+            else:
+                voted_with_party = -1
+
+            loyalty = weight * voted_with_party
+            loyalties.append(loyalty)
+        loyalty_score = np.mean(loyalties)
+        loyalty_scores_dct['loyalty_score'] = loyalty_score
+        loyalty_scores_list.append(loyalty_scores_dct)
+        
+    return pd.DataFrame(loyalty_scores_list)
