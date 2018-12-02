@@ -3,7 +3,7 @@ from flask import Flask, request, render_template, jsonify
 
 app = Flask(__name__, static_url_path="")
 
-@app.route('/')
+@app.route('/main')
 def index():
     """Return the main page."""
     return render_template('index.html')
@@ -27,3 +27,8 @@ def blog():
 def contact():
     """Return the main page."""
     return render_template('contact.html')
+
+@app.route('/')
+def wa():
+    """Return the main page."""
+    return render_template('wa.html')
