@@ -8,7 +8,7 @@ import sqlalchemy
 from WA_state_API_functions import get_status_data
 
 
-def save_status_data_STEP_SEVEN():
+def save_status_data():
     '''This data will be collected to identify which bills have yet to be voted on.
 
     Creates table: status_api
@@ -28,24 +28,20 @@ def save_status_data_STEP_SEVEN():
 
     # Retrieve API status data
     status_dcts = []
-    count = 0 
     for biennium, bill_num in zip(unique_2017['biennium'], 
                                 unique_2017['bill_num']):
         try: 
             status_dct = get_status_data(biennium, bill_num)
             status_dcts.append(status_dct)
-            count += 1
-            print(count)
         except:
-            count += 1
-            print(count)
             continue
     status_df = pd.DataFrame(status_dcts)
     
     # Filter out bills that have passed or failed
     def in_process(history_line):
         history_line = history_line.lower()
-        done_indications = ['adopted', 'effective date', 'failed', 'filed with secretary of state', 'vetoed', 'chapter']
+        done_indications = ['adopted', 'effective date', 'failed', 'filed with secretary of state', 
+                            'vetoed', 'chapter']
         for ind in done_indications:
             if ind in history_line:
                 return 0
@@ -54,8 +50,5 @@ def save_status_data_STEP_SEVEN():
     status_df['bill_in_process'] = status_df['history_line'].apply(in_process)
     bills_in_process = status_df[status_df['bill_in_process'] == 1]
     
-    # Merge with bill_df
-    bills_in_process_info = bills_in_process.merge(bill_df, how='left', on=['bill_id', 'biennium', 'bill_num'])
-    
     # Put in postgres table
-    bills_in_process_info.to_sql('status_api', con, if_exists='replace', index=False)
+    bills_in_process.to_sql('status_api', con, if_exists='replace', index=False)

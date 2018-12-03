@@ -114,8 +114,8 @@ def save_vote_data_STEP_FOUR():
 
     # Retrieve API voting data and put in postgres table
     vote_dfs = []
-    for biennium, bill_num in zip(unique_bill_nums_and_bienniums['biennium'][0:20000], 
-                                unique_bill_nums_and_bienniums['bill_num'][0:20000]):
+    for biennium, bill_num in zip(unique_bill_nums_and_bienniums['biennium'], 
+                                unique_bill_nums_and_bienniums['bill_num']):
         try: 
             vote_df = get_and_reorganize_rollcall_data(biennium, bill_num)
             vote_dfs.append(vote_df)
