@@ -26,7 +26,7 @@ def blog():
 @app.route('/contact')
 def contact():
     """Return the main page."""
-    return render_template('contact.html')
+    return render_template('wa-contact.html')
 
 @app.route('/')
 def wa():
