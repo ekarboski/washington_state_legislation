@@ -198,7 +198,7 @@ def get_status_data(biennium, billNumber):
        billNumber: str, for example '1003'
        '''
 
-    r = requests.get('http://wslwebservices.leg.wa.gov/LegislationService.asmx/GetCurrentStatus?biennium={}&billNumber={}'.format('2017-18', '5013'))
+    r = requests.get('http://wslwebservices.leg.wa.gov/LegislationService.asmx/GetCurrentStatus?biennium={}&billNumber={}'.format(biennium, billNumber))
     r.text
     root = ET.fromstring(r.text)
     
