@@ -32,3 +32,8 @@ def contact():
 def wa():
     """Return the main page."""
     return render_template('wa.html')
+
+@app.route('/about')
+def about():
+    """Return the main page."""
+    return render_template('wa-about.html')
