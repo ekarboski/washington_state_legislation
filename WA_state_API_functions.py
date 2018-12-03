@@ -192,50 +192,24 @@ def get_and_reorganize_rollcall_data(biennium, billNumber):
     return pd.DataFrame(final)
 
 
-# def OLD_split_rollcall_votes(column_name, vote_int, dict_name, row):
-#     '''Takes a string of names and returns a dictionary
-    
-#     Input
-#         column_name: str, for example 'members_voting_nay'
-#         vote_int: str, for example 0
-#         row: var, for example row
-#     '''
-#     names_lst = []
-#     if row[column_name] != None:
-#         names_lst = row[column_name].split(',')
-#     for name in names_lst:
-#         dict_name[name] = vote_int
-        
-        
-# def OLD_get_and_reorganize_rollcall_data(biennium, billNumber):
-#     '''Retrieves roll call data and organizes it so that each voter is given it's own line.
-#     Also codes votes into the following:
-#     Nay = 0, Yay = 1, Excused = 2, Absent = 3
-    
-#     Input
-#        biennium: str, for example '2015-16'
-#        billNumber: str, for example '1003'
-#        '''
+def get_status_data(biennium, billNumber):
+    '''Input
+       biennium: str, for example '2015-16'
+       billNumber: str, for example '1003'
+       '''
 
-#     rollcall_df = get_rollcall_data(biennium, billNumber)
+    r = requests.get('http://wslwebservices.leg.wa.gov/LegislationService.asmx/GetCurrentStatus?biennium={}&billNumber={}'.format('2017-18', '5013'))
+    r.text
+    root = ET.fromstring(r.text)
     
-#     all_bill_votes = []
-#     for _, row in rollcall_df.iterrows():
-#         votes = {}
-#         OLD_split_rollcall_votes('members_voting_nay', 0, votes, row)
-#         OLD_split_rollcall_votes('members_voting_yea', 1, votes, row)
-#         OLD_split_rollcall_votes('members_voting_excused', 2, votes, row)
-#         OLD_split_rollcall_votes('members_voting_absent', 3, votes, row)
-#         all_bill_votes.append(votes)
+    dct = {}
+    dct['status'] = root.find('{http://WSLWebServices.leg.wa.gov/}Status').text
+    dct['bill_id'] = root.find('{http://WSLWebServices.leg.wa.gov/}BillId').text
+    dct['history_line'] = root.find('{http://WSLWebServices.leg.wa.gov/}HistoryLine').text
+    dct['action_date'] = root.find('{http://WSLWebServices.leg.wa.gov/}ActionDate').text
+    dct['status'] = root.find('{http://WSLWebServices.leg.wa.gov/}Status').text
+    dct['biennium'] = biennium
+    dct['bill_num'] = billNumber
 
-#     final = []
-#     for i, votes in enumerate(all_bill_votes):
-#         for name, vote in votes.items():
-#             new_row = rollcall_df.iloc[i][['voting_agency', 'biennium', 'bill_id', 'motion', 
-#                                               'sequence_number', 'vote_date']].to_dict()
-#             new_row['voting_legislator'] = name
-#             new_row['vote'] = vote
-#             final.append(new_row)
-
-#     return pd.DataFrame(final)
+    return dct
         
