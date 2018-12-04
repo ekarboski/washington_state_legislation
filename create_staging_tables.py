@@ -118,7 +118,6 @@ class CreateStagingLegislatorDataframe(BaseEstimator, TransformerMixin):
 
         return legislator_df
     
-    
     @staticmethod
     def replace_missing_first_name(x):
         if type(x['first_name']) == float:
@@ -126,14 +125,12 @@ class CreateStagingLegislatorDataframe(BaseEstimator, TransformerMixin):
         else:
             return x['first_name']
         
-        
     @staticmethod
     def replace_missing_last_name(x):
         if type(x['last_name']) == float:
             return x['last_name_missing']
         else:
             return x['last_name']
-        
         
     @staticmethod
     def replace_missing_party(x):
@@ -193,8 +190,6 @@ def create_staging_vote_df_STEP_TWO(vote_df):
 
 
 
-
-
 def create_secondary_sponsor_column(sponsor_df):
     '''Create a column named secondary_sponsors that contains a list of secondary sponsors
     
@@ -246,6 +241,7 @@ def create_secondary_sponsor_column(sponsor_df):
     return pd.DataFrame(unique_bill_rows)
 
 
+
 def create_staging_bill_df_STEP_THREE(bill_df, sponsor_df):
     '''Join sponsor_df to bill_df and output the merged pandas dataframe.
     Input
@@ -262,9 +258,10 @@ def create_staging_bill_df_STEP_THREE(bill_df, sponsor_df):
     return MERGED
 
 
+
 def create_staging_unique_vote_dates_df(staging_vote_df, staging_bill_df):
     '''Identify the exact bill that the legislators voted on. Create a dataframe that conists of all vote_date 
-    and bill_unique pairs. Create a null unique_id field that labels each bill with a unique ID, and begins as 
+    and bill_unique pairs. Create a unique_id field that labels each bill with a unique ID, and begins as 
     null for unique_vote_dates. For each row in unique_vote_dates identify the bill that was created closest to, 
     but before, the vote date. Set the unique_id of that bill to the unique_id of that vote. This will be use to 
     later join the bill_df to the vote_df.'''
@@ -299,6 +296,8 @@ def create_staging_unique_vote_dates_df(staging_vote_df, staging_bill_df):
             
     return unique_vote_dates, staging_bill_df
 
+
+
 def create_staging_merged_initial_df(staging_vote_df, staging_bill_df):
     '''Create merged_initial by merging staging_bill_df and staging_vote_df on the unique_id field created in 
     create_staging_unique_vote_dates_df.
@@ -309,7 +308,9 @@ def create_staging_merged_initial_df(staging_vote_df, staging_bill_df):
     unique_vote_dates, staging_bill_df_with_unique_ids = create_staging_unique_vote_dates_df(staging_vote_df, staging_bill_df)
     unique_vote_dates = unique_vote_dates.drop('index', axis=1)
     staging_vote_df_with_unique_ids = staging_vote_df.merge(unique_vote_dates, how='left', on=['bill_unique', 'vote_date'])
-    return staging_vote_df_with_unique_ids.merge(staging_bill_df_with_unique_ids, how='left', on=['unique_id', 'bill_unique'])
+    merged_initial_df = staging_vote_df_with_unique_ids.merge(staging_bill_df_with_unique_ids, how='left', on=['unique_id', 'bill_unique'])
+    return merged_initial_df
+
 
 
 def create_staging_bill_text_df_STEP_FOUR(merged_initial_df):
@@ -331,6 +332,7 @@ def create_staging_bill_text_df_STEP_FOUR(merged_initial_df):
         except:
             continue
     return bills_to_scrape_df
+
 
 
 def create_staging_merged_final_df_STEP_FIVE(staging_vote_df, staging_bill_df, legislator_df):
@@ -361,6 +363,8 @@ def create_staging_merged_final_df_STEP_FIVE(staging_vote_df, staging_bill_df, l
                                       'bill_num_unique', 'bill_num', 'class'], axis = 1)
     return merged_final
     
+
+
 def load_and_clean_party_minority_history_df():
     '''Load party minority history data from csv file and make agency and minority_party fields ints.'''
 
@@ -383,6 +387,7 @@ def load_and_clean_party_minority_history_df():
     minority_hist['agency'] = minority_hist['agency'].apply(change_agency_to_int)
     minority_hist['minority_party'] = minority_hist['minority_party'].apply(change_party_letter_to_int)
     return minority_hist
+
 
 
 def clean_merged_final_STEP_SIX(MERGED_final, legislator_df):
@@ -460,6 +465,7 @@ def clean_merged_final_STEP_SIX(MERGED_final, legislator_df):
     return clean_df
 
 
+
 def create_rep_score_STEP_SEVEN(staging_bill_df, legislator_df):
     '''Create a dataframe with bill_num_unique, secondary_sponsors, primary_sponsor_id, and rep_score.
     rep_score is a ratio of number of republican sponsors (primary and secondary) to total number of sponsors.
@@ -505,6 +511,7 @@ def create_rep_score_STEP_SEVEN(staging_bill_df, legislator_df):
     return rep_score_df
 
 
+
 def create_loyalty_scores_df(clean_merged):
     '''Calculate loyalty scores for each representative. 
     Loyalty is calculated by taking'''
@@ -533,3 +540,23 @@ def create_loyalty_scores_df(clean_merged):
         loyalty_scores_list.append(loyalty_scores_dct)
         
     return pd.DataFrame(loyalty_scores_list)
+
+
+
+def create_staging_current_bill_text_df(current_bill_df):
+    '''Create staging_current_bill_text using unique bills from current_bill_df_df and scraping the urls.
+    Input
+    current_bill_df: pandas dataframe loaded from wa_leg_raw database, current_bill table
+    '''
+    
+    current_bill_text_df = current_bill_df[['biennium', 'bill_id', 'htm_url']]
+    current_bill_text_df['bill_text'] = ''
+    
+    for i, row in current_bill_text_df.iterrows():
+            url = row['htm_url']
+            try: 
+                bill_text = scrape_bill_url(url)
+                current_bill_text_df.iloc[i,-1] = bill_text
+            except:
+                continue
+    return current_bill_text_df
