@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 
 engine = create_engine('postgresql://emilykarboski@localhost:5432/wa_leg_staging')
+con = engine.connect()
 current_legislator_df = pd.read_sql_query('select * from "current_legislator"',con=engine)
 
 def change_agency_to_int(agency):
@@ -13,8 +14,8 @@ def change_agency_to_int(agency):
     if agency == 'Senate':
         return 1
 
-current_legislator_df['agency'] = current_legislator_df['agency'].apply(change_agency_to_int)
-current_legislator_df.rename(columns={'id': 'voter_id', 'agency': 'voting_agency'}, inplace=True)
+# current_legislator_df['agency'] = current_legislator_df['agency'].apply(change_agency_to_int)
+# current_legislator_df.rename(columns={'id': 'voter_id', 'agency': 'voting_agency'}, inplace=True)
 
 def filter_out_duplicates_from_current_leg(row):
     if row['last_name'] == 'Angel' and row['voting_agency'] == 0:
@@ -38,6 +39,8 @@ def filter_out_duplicates_from_current_leg(row):
     if row['last_name'] == 'Fortunato' and row['voting_agency'] == 0:
         return False
     if row['last_name'] == 'Fortunato' and row['district'] == 47:
+        return False
+    if row['last_name'] == 'Frockt' and row['voting_agency'] == 0:
         return False
     if row['last_name'] == 'Hasegawa' and row['voting_agency'] == 0:
         return False
@@ -78,6 +81,8 @@ def filter_out_duplicates_from_current_leg(row):
     if row['last_name'] == 'Sheldon' and row['voting_agency'] == 0:
         return False
     if row['last_name'] == 'Short' and row['voting_agency'] == 0:
+        return False
+    if row['last_name'] == 'Stonier':
         return False
     if row['last_name'] == 'Takko' and row['voting_agency'] == 0:
         return False
