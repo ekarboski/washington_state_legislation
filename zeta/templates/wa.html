@@ -129,7 +129,7 @@
 							</div>
 							
 							<!-- Button -->
-							<div class="button border_button element_button">
+							<!-- <div class="button border_button element_button">
 								<a href="#" class="d-flex flex-row align-items-center justify-content-center">
 									discover
 									<svg version="1.1" id="Layer_2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -137,10 +137,10 @@
 									<polygon id="arrow_poly_2" class="arrow_poly" points="13,3.5 9,0 9,3 0,3 0,4 9,4 9,7 "></polygon>
 									</svg>
 								</a>
-							</div>
+							</div> -->
 
 							<!-- Button -->
-							<div class="button element_button button_black">
+							<!-- <div class="button element_button button_black">
 								<a href="#" class="d-flex flex-row align-items-center justify-content-center">
 									discover
 									<svg version="1.1" id="Layer_3" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -148,10 +148,51 @@
 									<polygon id="arrow_poly_3" class="arrow_poly" points="13,3.5 9,0 9,3 0,3 0,4 9,4 9,7 "></polygon>
 									</svg>
 								</a>
-							</div>
+							</div> -->
 						</div>
 						
 					</div>
+
+					<!-- Milestones -->
+
+					<div class="elements_section">
+							<div class="elements_title">
+								<h3>Stats</h3>
+							</div>
+							<div class="milestones_container d-flex flex-lg-row flex-column">
+								
+								<!-- Milestone -->
+								<div class="milestone">
+									<div class="milestone_counter" data-end-value="42">0</div>
+									<div class="milestone_text">Senators</div>
+								</div>
+
+								<!-- Milestone -->
+								<div class="milestone">
+									<div class="milestone_counter" data-end-value="98">0</div>
+									<div class="milestone_text">Representatives</div>
+								</div>
+
+								<!-- Milestone -->
+								<div class="milestone">
+									<div class="milestone_counter" data-end-value="3042">0</div>
+									<div class="milestone_text">Bills in process</div>
+								</div>
+
+								<!-- Milestone -->
+								<div class="milestone">
+									<div class="milestone_counter" data-end-value="1410">0</div>
+									<div class="milestone_text">new bills in 2018</div>
+								</div>
+
+								<!-- Milestone -->
+								<div class="milestone">
+										<div class="milestone_counter" data-end-value="685">0</div>
+										<div class="milestone_text">bills passed in 2018</div>
+									</div>
+							</div>
+						</div>
+
 
 					<!-- Loaders -->
 
@@ -159,54 +200,78 @@
 						<div class="elements_title">
 							<h3>bill info</h3>
 						</div>
+						
 						<div class="row">
 							<div class="col-lg-6">
-								<div class="row elements_loaders_container">
-									<div class="col-lg-3">
-										<!-- Loader -->
-										<div class="loader" data-perc="0.75"><span>Democrat Sponsors</span></div>
+									<div class="elements_accordions">
+
+										<div class="accordion_container">
+
+											<div class="accordion d-flex flex-row align-items-center"> View Bill Topics</div>
+											<div class="accordion_panel">
+												<p>Placeholder</p>
+											</div>
+
+										</div>
+
+										<div class="accordion_container">
+
+											<div class="accordion d-flex flex-row align-items-center"> View Bill Sponsors</div>
+											<div class="accordion_panel">
+												<p>Placeholder</p>
+											</div>
+											
+										</div>
+
+										<!-- <div class="accordion_container">
+
+											<div class="accordion d-flex flex-row align-items-center"> View Bill Text</div>
+											<div class="accordion_panel">
+												<p>{{ bill_text }}</p>
+											</div>
+										</div> -->
 									</div>
-									<div class="col-lg-3">
-										<!-- Loader -->
-										<div class="loader" data-perc="0.25"><span>Republican Sponsors</span></div>
-									</div>
-								</div>
 							</div>
-					
 							<div class="col-lg-6">
-								<div class="elements_accordions">
-
-									<div class="accordion_container">
-
-										<div class="accordion d-flex flex-row align-items-center"> View Bill Text</div>
-										<div class="accordion_panel">
-											<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus vestibulum, quam tincidunt venenatis ultrices, est libero mattis ante, ac consectetur diam neque eget quam.</p>
-										</div>
-
-									</div>
-
-									<div class="accordion_container">
-
-										<div class="accordion d-flex flex-row align-items-center"> View Bill Sponsors</div>
-										<div class="accordion_panel">
-											<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus vestibulum, quam tincidunt venenatis ultrices, est libero mattis ante, ac consectetur diam neque eget quam.</p>
-										</div>
-										
-									</div>
-
-									<div class="accordion_container">
-
-										<div class="accordion d-flex flex-row align-items-center"> View Bill ..</div>
-										<div class="accordion_panel">
-											<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus vestibulum, quam tincidunt venenatis ultrices, est libero mattis ante, ac consectetur diam neque eget quam.</p>
-										</div>
+								<!-- Button --> 
+								<div class="elements_buttons_container d-flex flex-sm-row flex-column"></div>
+									<div class="button element_button button_black">
+											<a href="#" class="d-flex flex-row align-items-center justify-content-center">
+												view bill
+												<svg version="1.1" id="Layer_3" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+													width="13px" height="7px" viewBox="0 0 13 7" enable-background="new 0 0 13 7" xml:space="preserve">
+												<polygon id="arrow_poly_3" class="arrow_poly" points="13,3.5 9,0 9,3 0,3 0,4 9,4 9,7 "></polygon>
+												</svg>
+											</a>
 									</div>
 								</div>
 							</div>
 						</div>
+
+
+					<div class="elements_section">
+						<div class="row elements_loaders_container">
+							<div class="col-lg-3">
+								<!-- Loader -->
+								<div class="loader" data-perc={{ dem_score }}><span>Democrat Sponsors</span></div>
+							</div>
+							<div class="col-lg-3">
+								<!-- Loader -->
+								<div class="loader" data-perc={{ rep_score }}><span>Republican Sponsors</span></div>
+							</div>
+							<div class="col-lg-3">
+								<!-- Loader -->
+								<div class="loader" data-perc={{ rep_score }}><span>Leaning Yea</span></div>
+							</div>
+							<div class="col-lg-3">
+								<!-- Loader -->
+								<div class="loader" data-perc={{ rep_score }}><span>Undecided</span></div>
+							</div>
+						</div>
 					</div>
 
-					<!-- Progress Bars & Accordions -->
+
+					<!-- Progress Bars -->
 
 					<div class="elements_section">
 						<div class="row">
@@ -218,25 +283,241 @@
 
 										<div class="pbar_container">
 											<ul class="progress_bar_container col_12 clearfix">
+
 												<li class="pb_item">
-													<div id="skill_1_pbar" class="skill_bars" data-perc="0.85"></div>
-													<h5>Senator 1</h5>
+													<div id="skill_1_pbar" class="skill_bars" data-perc={{ senate_table[0]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[0]['last_name'] }}</h5>
 												</li>
 												<li class="pb_item">
-													<div id="skill_2_pbar" class="skill_bars" data-perc="1"></div>
-													<h5>Senator 2</h5>
+													<div id="skill_2_pbar" class="skill_bars" data-perc={{ senate_table[1]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[1]['last_name'] }}</h5>
 												</li>
 												<li class="pb_item">
-													<div id="skill_3_pbar" class="skill_bars" data-perc="0.75"></div>
-													<h5>Senator 3</h5>
+													<div id="skill_3_pbar" class="skill_bars" data-perc={{ senate_table[2]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[2]['last_name'] }}</h5>
 												</li>
 												<li class="pb_item">
-													<div id="skill_4_pbar" class="skill_bars" data-perc="0.95"></div>
-													<h5>Senator 4</h5>
+													<div id="skill_4_pbar" class="skill_bars" data-perc={{ senate_table[3]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[3]['last_name'] }}</h5>
 												</li>
+												<li class="pb_item">
+													<div id="skill_5_pbar" class="skill_bars" data-perc={{ senate_table[4]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[4]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_6_pbar" class="skill_bars" data-perc={{ senate_table[5]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[5]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_7_pbar" class="skill_bars" data-perc={{ senate_table[6]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[6]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_8_pbar" class="skill_bars" data-perc={{ senate_table[7]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[7]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_9_pbar" class="skill_bars" data-perc={{ senate_table[8]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[8]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_10_pbar" class="skill_bars" data-perc={{ senate_table[9]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[9]['last_name'] }}</h5>
+												</li>
+
+
+												<li class="pb_item">
+													<div id="skill_11_pbar" class="skill_bars" data-perc={{ senate_table[10]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[10]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_12_pbar" class="skill_bars" data-perc={{ senate_table[11]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[11]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_13_pbar" class="skill_bars" data-perc={{ senate_table[12]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[12]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_14_pbar" class="skill_bars" data-perc={{ senate_table[13]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[13]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_15_pbar" class="skill_bars" data-perc={{ senate_table[14]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[14]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_16_pbar" class="skill_bars" data-perc={{ senate_table[15]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[15]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_17_pbar" class="skill_bars" data-perc={{ senate_table[16]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[16]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_18_pbar" class="skill_bars" data-perc={{ senate_table[17]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[17]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_19_pbar" class="skill_bars" data-perc={{ senate_table[18]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[18]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_20_pbar" class="skill_bars" data-perc={{ senate_table[19]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[19]['last_name'] }}</h5>
+													</li>
+
+
+												<li class="pb_item">
+													<div id="skill_21_pbar" class="skill_bars" data-perc={{ senate_table[20]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[20]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_22_pbar" class="skill_bars" data-perc={{ senate_table[21]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[21]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_23_pbar" class="skill_bars" data-perc={{ senate_table[22]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[22]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_24_pbar" class="skill_bars" data-perc={{ senate_table[23]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[23]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_25_pbar" class="skill_bars" data-perc={{ senate_table[24]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[24]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_26_pbar" class="skill_bars" data-perc={{ senate_table[25]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[25]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_27_pbar" class="skill_bars" data-perc={{ senate_table[26]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[26]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_28_pbar" class="skill_bars" data-perc={{ senate_table[27]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[27]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_29_pbar" class="skill_bars" data-perc={{ senate_table[28]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[28]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_30_pbar" class="skill_bars" data-perc={{ senate_table[29]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[29]['last_name'] }}</h5>
+												</li>
+
+
+												<li class="pb_item">
+													<div id="skill_31_pbar" class="skill_bars" data-perc={{ senate_table[30]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[30]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_32_pbar" class="skill_bars" data-perc={{ senate_table[31]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[31]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_33_pbar" class="skill_bars" data-perc={{ senate_table[32]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[32]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_34_pbar" class="skill_bars" data-perc={{ senate_table[33]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[33]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_35_pbar" class="skill_bars" data-perc={{ senate_table[34]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[34]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_36_pbar" class="skill_bars" data-perc={{ senate_table[35]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[35]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_37_pbar" class="skill_bars" data-perc={{ senate_table[36]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[36]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_38_pbar" class="skill_bars" data-perc={{ senate_table[37]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[37]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_39_pbar" class="skill_bars" data-perc={{ senate_table[38]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[38]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_40_pbar" class="skill_bars" data-perc={{ senate_table[39]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[39]['last_name'] }}</h5>
+													</li>
+
+
+												<li class="pb_item">
+													<div id="skill_41_pbar" class="skill_bars" data-perc={{ senate_table[40]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[40]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_42_pbar" class="skill_bars" data-perc={{ senate_table[41]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[41]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_43_pbar" class="skill_bars" data-perc={{ senate_table[42]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[42]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_44_pbar" class="skill_bars" data-perc={{ senate_table[43]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[43]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_45_pbar" class="skill_bars" data-perc={{ senate_table[44]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[44]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_46_pbar" class="skill_bars" data-perc={{ senate_table[45]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[45]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_47_pbar" class="skill_bars" data-perc={{ senate_table[46]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[46]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_48_pbar" class="skill_bars" data-perc={{ senate_table[47]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[47]['last_name'] }}</h5>
+												</li>
+												<li class="pb_item">
+													<div id="skill_49_pbar" class="skill_bars" data-perc={{ senate_table[48]['predicted_vote'] }}></div>
+													<h5>Senator {{ senate_table[48]['last_name'] }}</h5>
+												</li>
+
+
+
 											</ul>
 										</div>
 									</div>
+							</div>
+
+							<div class="col-lg-6">
+								<div class="row elements_loaders_container">
+									<div class="col-lg-3"></div>
+									<div class="col-lg-3">
+										<!-- Loader -->
+										<div class="loader" data-perc="0.9"><span>Leaning Yea</span></div>
+									</div>
+								</div>
+								<div class="row elements_loaders_container">
+									<div class="col-lg-3"></div>
+									<div class="col-lg-3">
+										<!-- Loader -->
+										<div class="loader" data-perc="0.9"><span>Undecided</span></div>
+									</div>
+								</div>
+								<div class="row elements_loaders_container">
+									<div class="col-lg-3"></div>
+									<div class="col-lg-3">
+										<!-- Loader -->
+										<div class="loader" data-perc="0.9"><span>Leaning Nay</span></div>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -253,26 +534,201 @@
 											<div class="pbar_container">
 												<ul class="progress_bar_container col_12 clearfix">
 													<li class="pb_item">
-														<div id="skill_5_pbar" class="skill_bars" data-perc="0.85"></div>
-														<h5>Representative 1</h5>
+														<div id="skill_50_pbar" class="skill_bars" data-perc={{ house_table[0]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[0]['last_name'] }}</h5>
 													</li>
 													<li class="pb_item">
-														<div id="skill_6_pbar" class="skill_bars" data-perc="1"></div>
-														<h5>Representative 2</h5>
+														<div id="skill_51_pbar" class="skill_bars" data-perc={{ house_table[1]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[1]['last_name'] }}</h5>
+													</li>	
+													<li class="pb_item">
+														<div id="skill_52_pbar" class="skill_bars" data-perc={{ house_table[2]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[2]['last_name'] }}</h5>
 													</li>
 													<li class="pb_item">
-														<div id="skill_7_pbar" class="skill_bars" data-perc="0.75"></div>
-														<h5>Representative 3</h5>
+														<div id="skill_53_pbar" class="skill_bars" data-perc={{ house_table[3]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[3]['last_name'] }}</h5>
 													</li>
 													<li class="pb_item">
-														<div id="skill_8_pbar" class="skill_bars" data-perc="0.95"></div>
-														<h5>Representative 4</h5>
+														<div id="skill_54_pbar" class="skill_bars" data-perc={{ house_table[4]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[4]['last_name'] }}</h5>
+													</li>	
+													<li class="pb_item">
+														<div id="skill_55_pbar" class="skill_bars" data-perc={{ house_table[5]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[5]['last_name'] }}</h5>
+													</li>
+													<li class="pb_item">
+														<div id="skill_56_pbar" class="skill_bars" data-perc={{ house_table[6]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[6]['last_name'] }}</h5>
+													</li>
+													<li class="pb_item">
+														<div id="skill_57_pbar" class="skill_bars" data-perc={{ house_table[7]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[7]['last_name'] }}</h5>
+													</li>	
+													<li class="pb_item">
+														<div id="skill_58_pbar" class="skill_bars" data-perc={{ house_table[8]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[8]['last_name'] }}</h5>
+													</li>
+													<li class="pb_item">
+														<div id="skill_59_pbar" class="skill_bars" data-perc={{ house_table[9]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[9]['last_name'] }}</h5>
+													</li>
+													
+													
+													<li class="pb_item">
+														<div id="skill_60_pbar" class="skill_bars" data-perc={{ house_table[10]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[10]['last_name'] }}</h5>
+													</li>
+													<li class="pb_item">
+														<div id="skill_61_pbar" class="skill_bars" data-perc={{ house_table[11]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[11]['last_name'] }}</h5>
+													</li>	
+													<li class="pb_item">
+														<div id="skill_62_pbar" class="skill_bars" data-perc={{ house_table[12]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[12]['last_name'] }}</h5>
+													</li>
+													<li class="pb_item">
+														<div id="skill_63_pbar" class="skill_bars" data-perc={{ house_table[13]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[13]['last_name'] }}</h5>
+													</li>
+													<li class="pb_item">
+														<div id="skill_64_pbar" class="skill_bars" data-perc={{ house_table[14]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[14]['last_name'] }}</h5>
+													</li>	
+													<li class="pb_item">
+														<div id="skill_65_pbar" class="skill_bars" data-perc={{ house_table[15]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[15]['last_name'] }}</h5>
+													</li>
+													<li class="pb_item">
+														<div id="skill_66_pbar" class="skill_bars" data-perc={{ house_table[16]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[16]['last_name'] }}</h5>
+													</li>
+													<li class="pb_item">
+														<div id="skill_67_pbar" class="skill_bars" data-perc={{ house_table[17]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[17]['last_name'] }}</h5>
+													</li>	
+													<li class="pb_item">
+														<div id="skill_68_pbar" class="skill_bars" data-perc={{ house_table[18]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[18]['last_name'] }}</h5>
+													</li>
+													<li class="pb_item">
+														<div id="skill_69_pbar" class="skill_bars" data-perc={{ house_table[19]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[19]['last_name'] }}</h5>
+													</li>
+
+
+													<li class="pb_item">
+														<div id="skill_70_pbar" class="skill_bars" data-perc={{ house_table[20]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[20]['last_name'] }}</h5>
+													</li>
+													<li class="pb_item">
+														<div id="skill_71_pbar" class="skill_bars" data-perc={{ house_table[21]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[21]['last_name'] }}</h5>
+													</li>	
+													<li class="pb_item">
+														<div id="skill_72_pbar" class="skill_bars" data-perc={{ house_table[22]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[22]['last_name'] }}</h5>
+													</li>
+													<li class="pb_item">
+														<div id="skill_73_pbar" class="skill_bars" data-perc={{ house_table[23]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[23]['last_name'] }}</h5>
+													</li>
+													<li class="pb_item">
+														<div id="skill_74_pbar" class="skill_bars" data-perc={{ house_table[24]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[24]['last_name'] }}</h5>
+													</li>	
+													<li class="pb_item">
+														<div id="skill_75_pbar" class="skill_bars" data-perc={{ house_table[25]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[25]['last_name'] }}</h5>
+													</li>
+													<li class="pb_item">
+														<div id="skill_76_pbar" class="skill_bars" data-perc={{ house_table[26]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[26]['last_name'] }}</h5>
+													</li>
+													<li class="pb_item">
+														<div id="skill_77_pbar" class="skill_bars" data-perc={{ house_table[27]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[27]['last_name'] }}</h5>
+													</li>	
+													<li class="pb_item">
+														<div id="skill_78_pbar" class="skill_bars" data-perc={{ house_table[28]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[28]['last_name'] }}</h5>
+													</li>
+													<li class="pb_item">
+														<div id="skill_79_pbar" class="skill_bars" data-perc={{ house_table[29]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[29]['last_name'] }}</h5>
+													</li>
+
+													
+													<li class="pb_item">
+														<div id="skill_80_pbar" class="skill_bars" data-perc={{ house_table[30]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[30]['last_name'] }}</h5>
+													</li>
+													<li class="pb_item">
+														<div id="skill_81_pbar" class="skill_bars" data-perc={{ house_table[31]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[31]['last_name'] }}</h5>
+													</li>	
+													<li class="pb_item">
+														<div id="skill_82_pbar" class="skill_bars" data-perc={{ house_table[32]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[32]['last_name'] }}</h5>
+													</li>
+													<li class="pb_item">
+														<div id="skill_83_pbar" class="skill_bars" data-perc={{ house_table[33]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[33]['last_name'] }}</h5>
+													</li>
+													<li class="pb_item">
+														<div id="skill_84_pbar" class="skill_bars" data-perc={{ house_table[34]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[34]['last_name'] }}</h5>
+													</li>	
+													<li class="pb_item">
+														<div id="skill_85_pbar" class="skill_bars" data-perc={{ house_table[35]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[35]['last_name'] }}</h5>
+													</li>
+													<li class="pb_item">
+														<div id="skill_86_pbar" class="skill_bars" data-perc={{ house_table[36]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[36]['last_name'] }}</h5>
+													</li>
+													<li class="pb_item">
+														<div id="skill_87_pbar" class="skill_bars" data-perc={{ house_table[37]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[37]['last_name'] }}</h5>
+													</li>	
+													<li class="pb_item">
+														<div id="skill_88_pbar" class="skill_bars" data-perc={{ house_table[38]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[38]['last_name'] }}</h5>
+													</li>
+													<li class="pb_item">
+														<div id="skill_89_pbar" class="skill_bars" data-perc={{ house_table[39]['predicted_vote'] }}></div>
+														<h5>Representative {{ house_table[39]['last_name'] }}</h5>
+													</li>
+													
 													</li>
 												</ul>
 											</div>
 										</div>
 							</div>
-							
+
+							<div class="col-lg-6">
+									<div class="row elements_loaders_container">
+										<div class="col-lg-3"></div>
+										<div class="col-lg-3">
+											<!-- Loader -->
+											<div class="loader" data-perc="0.9"><span>Leaning Yea</span></div>
+										</div>
+									</div>
+									<div class="row elements_loaders_container">
+										<div class="col-lg-3"></div>
+										<div class="col-lg-3">
+											<!-- Loader -->
+											<div class="loader" data-perc="0.9"><span>Undecided</span></div>
+										</div>
+									</div>
+									<div class="row elements_loaders_container">
+										<div class="col-lg-3"></div>
+										<div class="col-lg-3">
+											<!-- Loader -->
+											<div class="loader" data-perc="0.9"><span>Leaning Nay</span></div>
+										</div>
+									</div>
+								</div>
 						</div>
 					</div>
 
