@@ -36,4 +36,8 @@ def get_bill_text(bill_id):
     bill = current_bill_text_df[current_bill_text_df['bill_id'] == 'ESHB 2299']
     return bill.iloc[0, -1]
 
-
+def calculate_lean_percentages(table):
+    leaning_yea = len(table[table['predicted_vote'] > 0.65]) / len(table)
+    leaning_nay = len(table[table['predicted_vote'] < 0.35]) / len(table)
+    undecided = 1 - leaning_yea - leaning_nay
+    return leaning_yea, leaning_nay, undecided
