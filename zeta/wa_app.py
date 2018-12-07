@@ -7,16 +7,19 @@ app = Flask(__name__, static_url_path="")
 @app.route('/')
 def wa():
     """Return the main page."""
-    selected_senate_table, selected_house_table, rep_score, dem_score = select_one_bill_from_label_df('2299')
+    # Interesting bills to showcase: 2145 - split votes, 2265 - split sponsors
+    bill_id = 'HB 2145'
+    selected_senate_table, selected_house_table, rep_score, dem_score, bill_url = select_one_bill_from_label_df(bill_id)
     senate_table = selected_senate_table.to_dict(orient='records')
     house_table = selected_house_table.to_dict(orient='records')
-    bill_text = get_bill_text('ESHB 2299')
+    bill_text = get_bill_text(bill_id)
     s_leaning_yea, s_leaning_nay, s_undecided = calculate_lean_percentages(selected_senate_table)
     h_leaning_yea, h_leaning_nay, h_undecided = calculate_lean_percentages(selected_house_table)
     return render_template('wa.html', senate_table=senate_table, house_table=house_table, 
                             rep_score=rep_score, dem_score=dem_score, bill_text=bill_text,
                             s_leaning_nay=s_leaning_nay, s_leaning_yea=s_leaning_yea, s_undecided=s_undecided, 
-                            h_leaning_nay=h_leaning_nay, h_leaning_yea=h_leaning_yea, h_undecided=h_undecided)
+                            h_leaning_nay=h_leaning_nay, h_leaning_yea=h_leaning_yea, h_undecided=h_undecided, 
+                            bill_url=bill_url, bill_id=bill_id)
 
 @app.route('/about')
 def about():

@@ -11,11 +11,11 @@ def load_label_data():
     return label_df
 
 
-def select_one_bill_from_label_df(bill_num):
+def select_one_bill_from_label_df(bill_id):
     '''Select bill from label_df that matches the inputted bill_num and return pandas dataframes of 
     the senate and the house, as well as the rep_score and dem_score for the bill.'''
     label_df = load_label_data()
-    selected_label_df = label_df[label_df['bill_num'] == bill_num]
+    selected_label_df = label_df[label_df['bill_id'] == bill_id]
 
     senate_selected_label_df = selected_label_df[selected_label_df['voting_agency'] == 1]
     sorted_senate = senate_selected_label_df.sort_values('last_name')
@@ -27,8 +27,10 @@ def select_one_bill_from_label_df(bill_num):
 
     rep_score = sorted_senate.loc[0, 'rep_score']
     dem_score = 1 - rep_score
+    url = sorted_senate.loc[0, 'htm_url']
+    url = url.replace(' ', '%20')
 
-    return sorted_senate, sorted_house, rep_score, dem_score
+    return sorted_senate, sorted_house, rep_score, dem_score, url
 
 def get_bill_text(bill_id):
     engine = create_engine('postgresql://localhost:5432/wa_leg_staging')
