@@ -49,7 +49,7 @@ This tool will open the door for the everyday citizen to follow and weigh in on 
 - Bills with vote dates before 2018 were using for training, bills with vote dates in 2018 were used as the test set.
 
 ### Feature Engineering
-![Influence Score](images/InfluenceScore.png)
+![Influence Score](images/feature_engineering.png)
 #### Features that improved the model
 - is_primary_sponsor
 - is_secondary_sponsor
