@@ -1,0 +1,12 @@
+# Requirements without version specifiers
+# must have postgreSQL
+python
+matplotlib
+numpy
+pandas
+bs4
+urllib
+selenium
+requests
+sqlalchemy
+sklearn
