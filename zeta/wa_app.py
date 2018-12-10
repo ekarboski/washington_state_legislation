@@ -2,9 +2,9 @@ import pandas as pd
 from flask import Flask, request, render_template, jsonify
 from web_functions import select_one_bill_from_label_df, get_bill_text, calculate_lean_percentages
 
-app = Flask(__name__, static_url_path="/wa")
+app = Flask(__name__, static_url_path="")
 
-@app.route('/wa')
+@app.route('/')
 def wa():
     """Return the main page."""
     # Interesting bills to showcase: 2145 - split votes, 2265 - split sponsors

@@ -11,18 +11,26 @@ def load_label_data():
     return label_df
 
 
+def change_party_to_letter(party):
+    if party == 0:
+        return 'D'
+    if party == 1:
+        return 'R'
+
+
 def select_one_bill_from_label_df(bill_id):
     '''Select bill from label_df that matches the inputted bill_num and return pandas dataframes of 
     the senate and the house, as well as the rep_score and dem_score for the bill.'''
     label_df = load_label_data()
     selected_label_df = label_df[label_df['bill_id'] == bill_id]
+    selected_label_df['party'] =  selected_label_df['party'].apply(change_party_to_letter)
 
     senate_selected_label_df = selected_label_df[selected_label_df['voting_agency'] == 1]
-    sorted_senate = senate_selected_label_df.sort_values('last_name')
+    sorted_senate = senate_selected_label_df.sort_values('predicted_vote')
     sorted_senate = sorted_senate.reset_index().drop('index', axis=1)
 
     house_selected_label_df = selected_label_df[selected_label_df['voting_agency'] == 0]
-    sorted_house = house_selected_label_df.sort_values('last_name')
+    sorted_house = house_selected_label_df.sort_values('predicted_vote')
     sorted_house = sorted_house.reset_index().drop('index', axis=1)
 
     rep_score = sorted_senate.loc[0, 'rep_score']
