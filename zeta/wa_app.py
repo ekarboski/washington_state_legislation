@@ -2,9 +2,9 @@ import pandas as pd
 from flask import Flask, request, render_template, jsonify
 from web_functions import select_one_bill_from_label_df, get_bill_text, calculate_lean_percentages
 
-app = Flask(__name__, static_url_path="")
+app = Flask(__name__, static_url_path="/wa")
 
-@app.route('/')
+@app.route('/wa')
 def wa():
     """Return the main page."""
     # Interesting bills to showcase: 2145 - split votes, 2265 - split sponsors
@@ -15,11 +15,12 @@ def wa():
     bill_text = get_bill_text(bill_id)
     s_leaning_yea, s_leaning_nay, s_undecided = calculate_lean_percentages(selected_senate_table)
     h_leaning_yea, h_leaning_nay, h_undecided = calculate_lean_percentages(selected_house_table)
+    linkedin = "https://www.linkedin.com/in/emilykarboski"
     return render_template('wa.html', senate_table=senate_table, house_table=house_table, 
                             rep_score=rep_score, dem_score=dem_score, bill_text=bill_text,
                             s_leaning_nay=s_leaning_nay, s_leaning_yea=s_leaning_yea, s_undecided=s_undecided, 
                             h_leaning_nay=h_leaning_nay, h_leaning_yea=h_leaning_yea, h_undecided=h_undecided, 
-                            bill_url=bill_url, bill_id=bill_id)
+                            bill_url=bill_url, bill_id=bill_id, linkedin=linkedin)
 
 @app.route('/about')
 def about():

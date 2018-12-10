@@ -15,9 +15,12 @@
 <link href="plugins/colorbox/colorbox.css" rel="stylesheet" type="text/css">
 <link rel="stylesheet" type="text/css" href="styles/elements_styles.css">
 <link rel="stylesheet" type="text/css" href="styles/elements_responsive.css">
+
+<script type="text/javascript" src="/brython.js"></script>
+<script type="text/javascript" src="/brython_stdlib.js"></script>
 </head>
 
-<body>
+<body onload="brython(1)">
 
 <div class="super_container">
 	
@@ -35,9 +38,8 @@
 		<!-- Main Navigation -->
 		<nav class="main_nav justify-self-end">
 			<ul class="nav_items">
-				<li class="active"><a href="elements.html"><span>Home</span></a></li>
-				<li><a href="blog.html"><span>About</span></a></li>
-				<li><a href="contact.html"><span>Contact</span></a></li>
+				<li class="active"><a href="wa.html"><span>Home</span></a></li>
+				<li><a href="about"><span>About</span></a></li>
 			</ul>
 		</nav>
 
@@ -63,12 +65,12 @@
 		</nav>
 		<div class="fs_social_container d-flex flex-row justify-content-end align-items-center">
 			<ul class="fs_social">
-				<li><a href="#"><i class="fab fa-pinterest trans_300"></i></a></li>
+				<!-- <li><a href="#"><i class="fab fa-pinterest trans_300"></i></a></li>
 				<li><a href="#"><i class="fab fa-facebook-f trans_300"></i></a></li>
 				<li><a href="#"><i class="fab fa-twitter trans_300"></i></a></li>
 				<li><a href="#"><i class="fab fa-dribbble trans_300"></i></a></li>
-				<li><a href="#"><i class="fab fa-behance trans_300"></i></a></li>
-				<li><a href="#"><i class="fab fa-linkedin-in trans_300"></i></a></li>
+				<li><a href="#"><i class="fab fa-behance trans_300"></i></a></li> -->
+				<li><a href={{ linkedin }}><i class="fab fa-linkedin-in trans_300"></i></a></li>
 			</ul>
 		</div>
 	</div>
@@ -93,12 +95,12 @@
 	</div>
 	<div class="home_social_container d-flex flex-row justify-content-end align-items-center">
 		<ul class="home_social">
-			<li><a href="#"><i class="fab fa-pinterest trans_300"></i></a></li>
+			<!-- <li><a href="#"><i class="fab fa-pinterest trans_300"></i></a></li>
 			<li><a href="#"><i class="fab fa-facebook-f trans_300"></i></a></li>
 			<li><a href="#"><i class="fab fa-twitter trans_300"></i></a></li>
 			<li><a href="#"><i class="fab fa-dribbble trans_300"></i></a></li>
-			<li><a href="#"><i class="fab fa-behance trans_300"></i></a></li>
-			<li><a href="#"><i class="fab fa-linkedin-in trans_300"></i></a></li>
+			<li><a href="#"><i class="fab fa-behance trans_300"></i></a></li> -->
+			<li><a href={{ linkedin }}><i class="fab fa-linkedin-in trans_300"></i></a></li>
 		</ul>
 	</div>	
 
@@ -116,39 +118,28 @@
 							<h3>Choose Bill</h3>
 						</div>
 						<div class="elements_buttons_container d-flex flex-sm-row flex-column">
-							
+							<input id="input16" autocomplete="off" value="Type here" width="13px" height="7px">	
+
 							<!-- Button -->
 							<div class="button element_button">
 								<a href="#" class="d-flex flex-row align-items-center justify-content-center">
-									discover
+									find bill
 									<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 										 width="13px" height="7px" viewBox="0 0 13 7" enable-background="new 0 0 13 7" xml:space="preserve">
 									<polygon id="arrow_poly_1" class="arrow_poly" points="13,3.5 9,0 9,3 0,3 0,4 9,4 9,7 "></polygon>
 									</svg>
 								</a>
 							</div>
-							
-							<!-- Button -->
-							<!-- <div class="button border_button element_button">
-								<a href="#" class="d-flex flex-row align-items-center justify-content-center">
-									discover
-									<svg version="1.1" id="Layer_2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-										 width="13px" height="7px" viewBox="0 0 13 7" enable-background="new 0 0 13 7" xml:space="preserve">
-									<polygon id="arrow_poly_2" class="arrow_poly" points="13,3.5 9,0 9,3 0,3 0,4 9,4 9,7 "></polygon>
-									</svg>
-								</a>
-							</div> -->
+						<script type="text/python3">
+							from browser import document, html
 
-							<!-- Button -->
-							<!-- <div class="button element_button button_black">
-								<a href="#" class="d-flex flex-row align-items-center justify-content-center">
-									discover
-									<svg version="1.1" id="Layer_3" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-										 width="13px" height="7px" viewBox="0 0 13 7" enable-background="new 0 0 13 7" xml:space="preserve">
-									<polygon id="arrow_poly_3" class="arrow_poly" points="13,3.5 9,0 9,3 0,3 0,4 9,4 9,7 "></polygon>
-									</svg>
-								</a>
-							</div> -->
+							def show_values(event):
+								input = document["input16"].value
+
+							document["button element_button"].bind("click", show_values)
+					
+						</script>
+	
 						</div>
 						
 					</div>
@@ -183,13 +174,6 @@
 											
 										</div>
 
-										<!-- <div class="accordion_container">
-
-											<div class="accordion d-flex flex-row align-items-center"> View Bill Text</div>
-											<div class="accordion_panel">
-												<p>{{ bill_text }}</p>
-											</div>
-										</div> -->
 									</div>
 							</div>
 							<div class="col-lg-6">
@@ -1032,12 +1016,12 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 				<div class="col-sm-6 text-sm-right text-center">
 					<div class="footer_social_container">
 						<ul class="footer_social">
-							<li><a href="#"><i class="fab fa-pinterest trans_300"></i></a></li>
+							<!-- <li><a href="#"><i class="fab fa-pinterest trans_300"></i></a></li>
 							<li><a href="#"><i class="fab fa-facebook-f trans_300"></i></a></li>
 							<li><a href="#"><i class="fab fa-twitter trans_300"></i></a></li>
 							<li><a href="#"><i class="fab fa-dribbble trans_300"></i></a></li>
 							<li><a href="#"><i class="fab fa-behance trans_300"></i></a></li>
-							<li><a href="#"><i class="fab fa-linkedin-in trans_300"></i></a></li>
+							<li><a href="#"><i class="fab fa-linkedin-in trans_300"></i></a></li> -->
 						</ul>
 					</div>
 				</div>
