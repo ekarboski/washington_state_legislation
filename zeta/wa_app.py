@@ -1,4 +1,5 @@
 import pandas as pd
+import urllib
 from flask import Flask, request, render_template, jsonify
 from web_functions import select_one_bill_from_label_df, get_bill_text, calculate_lean_percentages
 
@@ -19,11 +20,25 @@ def get_bill_info(bill_id='HB 2145'):
     bill_text = get_bill_text(bill_id)
     s_leaning_yea, s_leaning_nay, s_undecided = calculate_lean_percentages(selected_senate_table)
     h_leaning_yea, h_leaning_nay, h_undecided = calculate_lean_percentages(selected_house_table)
-    return dict( senate_table=senate_table, house_table=house_table, 
-                            rep_score=rep_score, dem_score=dem_score, bill_text=bill_text,
+    house_table_html = render_template('house_table.html', house_table=house_table)
+    senate_table_html = render_template('senate_table.html', senate_table=senate_table)
+    return dict( rep_score=rep_score, dem_score=dem_score, bill_text=bill_text,
                             s_leaning_nay=s_leaning_nay, s_leaning_yea=s_leaning_yea, s_undecided=s_undecided, 
                             h_leaning_nay=h_leaning_nay, h_leaning_yea=h_leaning_yea, h_undecided=h_undecided, 
-                            bill_url=bill_url, bill_id=bill_id)
+                            bill_url=bill_url, bill_id=bill_id, house_table_html=house_table_html, senate_table_html=senate_table_html)
+
+
+
+@app.route('/bill/<bill_id>')
+def get_bill_info_page(bill_id):
+    """Return the main page."""
+    kwargs = get_bill_info(bill_id)
+    return render_template('wa.html', **kwargs)
+
+@app.route('/bill_data/<bill_id>')
+def get_bill_info_json(bill_id):
+    """Return the main page."""
+    return jsonify(get_bill_info(bill_id))
 
 
 @app.route('/about')

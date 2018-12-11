@@ -10,6 +10,7 @@ def load_label_data():
     label_df = pd.read_sql_query('select * from "label"',con=engine)
     return label_df
 
+label_df = load_label_data()
 
 def change_party_to_letter(party):
     if party == 0:
@@ -21,7 +22,6 @@ def change_party_to_letter(party):
 def select_one_bill_from_label_df(bill_id):
     '''Select bill from label_df that matches the inputted bill_num and return pandas dataframes of 
     the senate and the house, as well as the rep_score and dem_score for the bill.'''
-    label_df = load_label_data()
     selected_label_df = label_df[label_df['bill_id'] == bill_id]
     selected_label_df['party'] =  selected_label_df['party'].apply(change_party_to_letter)
 
