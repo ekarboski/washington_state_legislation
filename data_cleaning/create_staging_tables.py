@@ -2,18 +2,20 @@ import psycopg2
 from sqlalchemy import create_engine
 import pandas as pd
 import numpy as np
-from sklearn.base import BaseEstimator, TransformerMixin
 from collections import defaultdict
-from web_scrape_functions import scrape_bill_url
+from data_aquisition.web_scrape_functions import scrape_bill_url
 
 
 def create_staging_legislator_df_STEP_ONE(vote_df, committee_member_df, missing_leg_info_df):
-    """Merge votes_df, committee_df and missing_legislator_info_df and clean data to create legislator_df
+    """Merge vote_df, committee_df and missing_legislator_info_df and clean data to create legislator_df.
     
-    Input
-    votes_df: pandas dataframe loaded from wa_leg_raw database, vote_api table
-    committee_member_df: pandas dataframe loaded from wa_leg_raw database, committee_member_api table
-    missing_legislator_info_df: pandas dataframe loaded missing_legislators.csv
+    Args:
+        vote_df: pandas dataframe loaded from wa_leg_raw database, vote_api table
+        committee_member_df: pandas dataframe loaded from wa_leg_raw database, committee_member_api table
+        missing_legislator_info_df: pandas dataframe loaded from missing_legislators.csv
+
+    Returns:
+        legislator_df: pandas dataframe with district, party, id, names and agency information for each legislator
     """
     leg_info_from_vote_df = vote_df.loc[:, ['biennium', 'voter_id', 'voter_name', 'voting_agency']]
     leg_info_from_vote_df.drop_duplicates(keep='first', inplace=True)
@@ -70,92 +72,20 @@ def create_staging_legislator_df_STEP_ONE(vote_df, committee_member_df, missing_
     legislator_df['district'] = legislator_df['district'].apply(int)
     
     return legislator_df
-
-
-
-class CreateStagingLegislatorDataframe(BaseEstimator, TransformerMixin):
-    """Merge votes_df, committee_df and missing_legislator_df and clean data to create legislator_df"""
-    
-    def __init__(self, vote_df, committee_member_df, missing_leg_info_df):
-        """Input
-           votes_df: pandas dataframe loaded from wa_leg_raw database, vote_api table
-           committee_member_df: pandas dataframe loaded from wa_leg_raw database, committee_member_api table
-           missing_legislator_df: pandas dataframe loaded missing_legislators.csv"""
-        self.vote_df = vote_df
-        self.committee_member_df = committee_member_df
-        self.missing_leg_info_df = missing_leg_info_df
-    
-    def fit(self, X=None, y=None):
-        return self
-
-    def transform(self, X=None):
-        leg_info_from_vote_df = self.vote_df.loc[:, ['biennium', 'voter_id', 'voter_name', 'voting_agency']]
-        leg_info_from_vote_df.drop_duplicates(keep='first', inplace=True)
-
-        leg_info_from_cm_df = self.committee_member_df.loc[:, ['district', 'id', 'name', 'first_name', 'party']]
-        leg_info_from_cm_df = leg_info_from_cm_df.rename(index=str, columns={"id": "voter_id"})
-        leg_info_from_cm_df['last_name'] = leg_info_from_cm_df['name'].apply(lambda x: x.split()[1])
-        leg_info_from_cm_df.drop_duplicates(keep='first', inplace=True)
-
-        legislator_df = leg_info_from_vote_df.merge(leg_info_from_cm_df, how='outer', on='voter_id')
-        legislator_df.drop_duplicates(keep="first", inplace=True)
-
-        self.missing_leg_info_df['district'] = self.missing_leg_info_df['district'].apply(str)
-        self.missing_leg_info_df['voter_id'] = self.missing_leg_info_df['voter_id'].apply(str)
-
-        legislator_df = legislator_df.merge(self.missing_leg_info_df, how='outer', on='voter_id', suffixes=('', '_missing'))
-
-        legislator_df['first_name'] = legislator_df.apply(lambda x : replace_missing_first_name(x),axis=1)
-        legislator_df['party']      = legislator_df.apply(lambda x : replace_missing_party(x),     axis=1)
-        legislator_df['district']   = legislator_df.apply(lambda x : replace_missing_district(x),  axis=1)
-        legislator_df['last_name']  = legislator_df.apply(lambda x : replace_missing_last_name(x), axis=1)
-
-        legislator_df = legislator_df.drop(['voter_name', 'name', 'district_missing', 'party_missing', 'first_name_missing', 'last_name_missing', 'biennium'], axis=1)
-        legislator_df.drop_duplicates(keep='first', inplace=True)
-        legislator_df.columns = ['id', 'agency', 'district', 'first_name', 'party', 'last_name']
-        legislator_df['id'] = legislator_df['id'].apply(int)
-        legislator_df['district'] = legislator_df['district'].apply(int)
-
-        return legislator_df
-    
-    @staticmethod
-    def replace_missing_first_name(x):
-        if type(x['first_name']) == float:
-            return x['first_name_missing']
-        else:
-            return x['first_name']
-        
-    @staticmethod
-    def replace_missing_last_name(x):
-        if type(x['last_name']) == float:
-            return x['last_name_missing']
-        else:
-            return x['last_name']
-        
-    @staticmethod
-    def replace_missing_party(x):
-        if type(x['party']) == float:
-            if x['party_missing'] == 'R':
-                return 'Republican'
-            if x['party_missing'] == 'D':
-                return 'Democrat'
-        else:
-            return x['party']
-        
-        
-    @staticmethod
-    def replace_missing_district(x):
-        if type(x['district']) == float:
-            return x['district_missing']
-        else:
-            return x['district']
         
         
       
-def create_staging_vote_df_STEP_TWO(vote_df):
-    '''Create statging_vote_df from raw_vote_df'''
+def create_staging_vote_df_STEP_TWO(raw_vote_df):
+    """Create statging_vote_df from raw_vote_df by cleaning features and changing data types.
+    
+    Args:
+        raw_vote_df: pandas dataframe loaded from wa_leg_raw database, vote_api table
+    
+    Returns:
+        staging_vote_df: pandas dataframe
+    """
 
-    vote_df['bill_unique'] = vote_df['biennium'] + ' ' + vote_df['bill_id']
+    raw_vote_df['bill_unique'] = raw_vote_df['biennium'] + ' ' + raw_vote_df['bill_id']
 
 
     def change_biennium_to_year(biennium):
@@ -178,24 +108,27 @@ def create_staging_vote_df_STEP_TWO(vote_df):
             return 1
 
         
-    vote_df['year'] = vote_df['biennium'].apply(change_biennium_to_year)
-    vote_df = vote_df.drop(['bill_id', 'biennium', 'motion'], axis=1)
-    vote_df['sequence_number'] = vote_df['sequence_number'].apply(int)
-    vote_df['voter_id'] = vote_df['voter_id'].apply(int)
-    vote_df['vote_date'] = pd.to_datetime(vote_df['vote_date'])
-    vote_df['vote'] = vote_df['vote'].apply(change_vote_to_int)
-    vote_df['voting_agency'] = vote_df['voting_agency'].apply(change_agency_to_int)
+    raw_vote_df['year'] = raw_vote_df['biennium'].apply(change_biennium_to_year)
+    staging_vote_df = vote_df.drop(['bill_id', 'biennium', 'motion'], axis=1)
+    staging_vote_df['sequence_number'] = staging_vote_df['sequence_number'].apply(int)
+    staging_vote_df['voter_id'] = staging_vote_df['voter_id'].apply(int)
+    staging_vote_df['vote_date'] = pd.to_datetime(staging_vote_df['vote_date'])
+    staging_vote_df['vote'] = staging_vote_df['vote'].apply(change_vote_to_int)
+    staging_vote_df['voting_agency'] = staging_vote_df['voting_agency'].apply(change_agency_to_int)
 
-    return vote_df
+    return staging_vote_df
 
 
 
 def create_secondary_sponsor_column(sponsor_df):
-    '''Create a column named secondary_sponsors that contains a list of secondary sponsors
+    """Reorganizes raw_sponsor_df to create a column named secondary_sponsors that contains a list of secondary sponsors.
     
-    Input:
-    sponsor_df: pandas dataframe retrieved from wa_leg raw database, sponsor_api table
-    '''
+    Args:
+        sponsor_df: pandas dataframe retrieved from wa_leg_raw database, sponsor_api table
+
+    Returns:
+        vote_df: pandas dataframe 
+    """
     # Create dictionary with bill_id and biennium as keys and list of secondary sponsors as values
     s = defaultdict(list)
     for s_id, s_type, biennium, bill_id in zip(sponsor_df['sponsor_id'], 
@@ -242,29 +175,42 @@ def create_secondary_sponsor_column(sponsor_df):
 
 
 
-def create_staging_bill_df_STEP_THREE(bill_df, sponsor_df):
-    '''Join sponsor_df to bill_df and output the merged pandas dataframe.
-    Input
-    bill_df: pandas dataframe retrieved from wa_leg raw database, bill_api table
-    sponsor_df: pandas dataframe retrieved from wa_leg raw database, sponsor_api table
-    '''
+def create_staging_bill_df_STEP_THREE(raw_bill_df, sponsor_df):
+    """Merge raw_sponsor_df to raw_bill_df to add sponsor features to bill_df.
+  
+    Args:
+        bill_df: pandas dataframe retrieved from wa_leg_raw database, bill_api table
+        sponsor_df: pandas dataframe retrieved from wa_leg_raw database, sponsor_api table
+
+    Returns:
+        staging_bill_df: pandas dataframe 
+    """
     sponsor_df_unique = create_secondary_sponsor_column(sponsor_df)
-    bill_df['bill_num'] = bill_df['bill_id'].apply(lambda x: x.split()[1] if type(x) == str else x)
-    bill_df['bill_num_unique'] = bill_df['biennium'] + ' ' + bill_df['bill_num']
+    raw_bill_df['bill_num'] = raw_bill_df['bill_id'].apply(lambda x: x.split()[1] if type(x) == str else x)
+    raw_bill_df['bill_num_unique'] = raw_bill_df['biennium'] + ' ' + raw_bill_df['bill_num']
     
-    MERGED = bill_df.merge(sponsor_df_unique, how='left', on=['bill_num_unique', 'biennium'], suffixes=['', '_sp'])
-    MERGED = MERGED.drop(['bill_id_sp', 'bill_num_sp'], axis=1)
-    MERGED = MERGED[MERGED['primary_sponsor_id'].notnull()]
-    return MERGED
+    staging_bill_df = bill_df.merge(sponsor_df_unique, how='left', on=['bill_num_unique', 'biennium'], suffixes=['', '_sp'])
+    staging_bill_df = staging_bill_df.drop(['bill_id_sp', 'bill_num_sp'], axis=1)
+    staging_bill_df = staging_bill_df[staging_bill_df['primary_sponsor_id'].notnull()]
+    return staging_bill_df
 
 
 
 def create_staging_unique_vote_dates_df(staging_vote_df, staging_bill_df):
-    '''Identify the exact bill that the legislators voted on. Create a dataframe that conists of all vote_date 
+    """Identify the exact bill that the legislators voted on. Create a dataframe that conists of all vote_date 
     and bill_unique pairs. Create a unique_id field that labels each bill with a unique ID, and begins as 
     null for unique_vote_dates. For each row in unique_vote_dates identify the bill that was created closest to, 
     but before, the vote date. Set the unique_id of that bill to the unique_id of that vote. This will be use to 
-    later join the bill_df to the vote_df.'''
+    later join the bill_df to the vote_df.
+    
+    Args:
+        staging_vote_df: pandas dataframe retrieved from wa_leg_staging database, vote table
+        staging_bill_df: pandas dataframe retrieved from wa_leg_staging database, bill table
+
+    Returns:
+        unique_vote_dates: pandas dataframe of unique bills with 'unique_id' feature
+        staging_bill_df: pandas dataframe of bill info with matching 'unique_id' feature
+    """
     
     staging_bill_df['htm_create_date'] =        pd.to_datetime(staging_bill_df['htm_create_date'])
     staging_bill_df['htm_last_modified_date'] = pd.to_datetime(staging_bill_df['htm_last_modified_date'])
@@ -299,12 +245,17 @@ def create_staging_unique_vote_dates_df(staging_vote_df, staging_bill_df):
 
 
 def create_staging_merged_initial_df(staging_vote_df, staging_bill_df):
-    '''Create merged_initial by merging staging_bill_df and staging_vote_df on the unique_id field created in 
+    """Create merged_initial by merging staging_bill_df and staging_vote_df on the unique_id field created in 
     create_staging_unique_vote_dates_df.
-    Input
-    staging_bill_df: pandas dataframe loaded from wa_leg_staging database, bill table
-    staging_vote_df:pandas dataframe loaded from wa_leg_staging database, vote table
-    '''
+    
+    Args:
+        staging_bill_df: pandas dataframe loaded from wa_leg_staging database, bill table
+        staging_vote_df:pandas dataframe loaded from wa_leg_staging database, vote table
+
+    Returns:
+        merged_initial_df: pandas dataframe
+    """
+
     unique_vote_dates, staging_bill_df_with_unique_ids = create_staging_unique_vote_dates_df(staging_vote_df, staging_bill_df)
     unique_vote_dates = unique_vote_dates.drop('index', axis=1)
     staging_vote_df_with_unique_ids = staging_vote_df.merge(unique_vote_dates, how='left', on=['bill_unique', 'vote_date'])
@@ -314,35 +265,43 @@ def create_staging_merged_initial_df(staging_vote_df, staging_bill_df):
 
 
 def create_staging_bill_text_df_STEP_FOUR(merged_initial_df):
-    '''Create staging_bill_text using unique bills from merged_initial_df and scraping the urls.
-    Input
-    merged_initial_df: pandas dataframe loaded from wa_leg_staging database, merged_initial table
-    '''
+    """Create staging_bill_text using unique bills from merged_initial_df and scraping the urls.
+
+    Args:
+        merged_initial_df: pandas dataframe loaded from wa_leg_staging database, merged_initial table
+
+    Returns:
+        bill_text_scrape_df: pandas dataframe
+    """
     
-    bills_to_scrape_df = merged_initial_df[['unique_id', 'htm_url']]
-    bills_to_scrape_df.drop_duplicates(keep='first', inplace=True)
-    bills_to_scrape_df['bill_text'] = ''
-    bills_to_scrape_df.reset_index(inplace=True)
+    bill_text_scrape_df = merged_initial_df[['unique_id', 'htm_url']]
+    bill_text_scrape_df.drop_duplicates(keep='first', inplace=True)
+    bill_text_scrape_df['bill_text'] = ''
+    bill_text_scrape_df.reset_index(inplace=True)
     
-    for i, row in bills_to_scrape_df.iterrows():
+    for i, row in bill_text_scrape_df.iterrows():
         url = row['htm_url']
         try: 
             bill_text = scrape_bill_url(url)
-            bills_to_scrape_df.iloc[i,-1] = bill_text
+            bill_text_scrape_df.iloc[i,-1] = bill_text
         except:
             continue
-    return bills_to_scrape_df
+    return bill_text_scrape_df
 
 
 
-def create_staging_merged_final_df_STEP_FIVE(staging_vote_df, staging_bill_df, legislator_df):
-    '''Create merged_final pandas dataframe. This dataframe contains all necessary data and is ready for 
+def create_staging_merged_intermediate_df_STEP_FIVE(staging_vote_df, staging_bill_df, legislator_df):
+    """Create merged_final pandas dataframe. This dataframe contains all necessary data and is ready for 
     cleaning.
-    Input
-    merged_initial_df: pandas dataframe loaded from wa_leg_staging database, merged_inital table
-    bill_text_df: pandas dataframe loaded from wa_leg_staging database, bill_text table
-    legislator_df: pandas dataframe loaded from wa_leg_staging database, legislator table
-    '''
+
+    Args:
+        merged_initial_df: pandas dataframe loaded from wa_leg_staging database, merged_inital table
+        bill_text_df: pandas dataframe loaded from wa_leg_staging database, bill_text table
+        legislator_df: pandas dataframe loaded from wa_leg_staging database, legislator table
+
+    Returns:
+        merged_intermediate: pandas dataframe
+    """
     merged_initial_df = create_staging_merged_initial_df(staging_vote_df, staging_bill_df)
     # merged_second_df = merged_initial_df.merge(bill_text_df, how='left', on=['unique_id', 'htm_url'])
     
@@ -353,15 +312,15 @@ def create_staging_merged_final_df_STEP_FIVE(staging_vote_df, staging_bill_df, l
             return 1
     
     legislator_df['agency'] = legislator_df['agency'].apply(change_agency_to_int)
-    merged_final = merged_initial_df.merge(legislator_df, 
+    merged_intermediate = merged_initial_df.merge(legislator_df, 
                                how='left', 
                                left_on=['voter_id', 'voting_agency'], 
                                right_on=['id', 'agency'])
     
-    merged_final = merged_final.drop(['sequence_number', 'type', 
+    merged_intermediate = merged_intermediate.drop(['sequence_number', 'type', 
                                       'voter_name', 'htm_last_modified_date', 'description', 
                                       'bill_num_unique', 'bill_num', 'class'], axis = 1)
-    return merged_final
+    return merged_intermediate
     
 
 
@@ -390,21 +349,20 @@ def load_and_clean_party_minority_history_df():
 
 
 
-def clean_merged_final_STEP_SIX(MERGED_final, legislator_df):
-    '''Create a MERGED_final pandas dataframe and clean columns so that data type is correct. Feature
+def clean_merged_final_STEP_SIX(merged_intermediate, legislator_df):
+    """Create a merged_intermediate pandas dataframe and clean columns so that data type is correct. Feature
     engineer several new features such as is_primary_sponsor.
     
-    Parameters
-    ----------
-    MERGED_final: pandas dataframe created with create_staging_merged_final_df_STEP_FIVE
+    Args: 
+        merged_intermediate: pandas dataframe created with create_staging_merged_intermediate_df_STEP_FIVE
+        legislator_df: pandas dataframe loaded from wa_leg_staging, legislator table
 
-    Output
-    ------
-    clean_df: pandas dataframe
-    '''
+    Returns:
+        merged_final: pandas dataframe
+    """
     
-    MERGED_valid = MERGED_final[MERGED_final['primary_sponsor_id'].notnull()]
-    clean_df = MERGED_valid.drop(['name', 'first_name', 'last_name', 'id', 
+    merged_valid = merged_intermediate[merged_intermediate['primary_sponsor_id'].notnull()]
+    merged_final = merged_valid.drop(['name', 'first_name', 'last_name', 'id', 
                                   'agency', 'long_friendly_name'], axis=1)
     
     def change_agency_to_int(agency):
@@ -421,11 +379,11 @@ def clean_merged_final_STEP_SIX(MERGED_final, legislator_df):
         else: 
             return sponsors
     
-    clean_df['sponsor_agency'] = clean_df['sponsor_agency'].apply(change_agency_to_int)
-    clean_df['primary_sponsor_id'] = clean_df['primary_sponsor_id'].apply(int)
-    clean_df['secondary_sponsors'] = clean_df['secondary_sponsors'].apply(make_sec_sponsors_a_list)
-    clean_df['secondary_sponsors'].fillna('', inplace=True)
-    clean_df['is_primary_sponsor'] = clean_df['voter_id'] == clean_df['primary_sponsor_id']
+    merged_final['sponsor_agency'] = merged_final['sponsor_agency'].apply(change_agency_to_int)
+    merged_final['primary_sponsor_id'] = merged_final['primary_sponsor_id'].apply(int)
+    merged_final['secondary_sponsors'] = merged_final['secondary_sponsors'].apply(make_sec_sponsors_a_list)
+    merged_final['secondary_sponsors'].fillna('', inplace=True)
+    merged_final['is_primary_sponsor'] = merged_final['voter_id'] == merged_final['primary_sponsor_id']
     
     minority_hist = load_and_clean_party_minority_history_df()
     
@@ -450,29 +408,26 @@ def clean_merged_final_STEP_SIX(MERGED_final, legislator_df):
             sponsor_party = subset_leg.iloc[0, 4]
             return sponsor_party
         else: return 2
-
-#     def find_first_read_date(bill_text):
-#         text_lst = bill_text.split('Read first time ')
-#         read_first_time_date = text_lst[1][0:8]
-#         print(text_lst[1][0:8])
-#     clean_df['read_first_time_date'] = clean_df['bill_text'].apply(find_first_read_date)
     
-    clean_df['is_minority_party'] = clean_df.apply(make_is_minority_party, axis=1)
-    clean_df['is_secondary_sponsor'] = clean_df.apply(make_is_secondary_sponsor, axis=1)
-    clean_df['sponsor_party'] = clean_df.apply(find_sponsor_party, axis=1)
-    clean_df = clean_df.drop(['primary_sponsor_id', 'secondary_sponsors', 'htm_create_date', 'year'], axis=1)
+    merged_final['is_minority_party'] = merged_final.apply(make_is_minority_party, axis=1)
+    merged_final['is_secondary_sponsor'] = merged_final.apply(make_is_secondary_sponsor, axis=1)
+    merged_final['sponsor_party'] = merged_final.apply(find_sponsor_party, axis=1)
+    merged_final = merged_final.drop(['primary_sponsor_id', 'secondary_sponsors', 'htm_create_date', 'year'], axis=1)
     
-    return clean_df
+    return merged_final
 
 
 
 def create_rep_score_STEP_SEVEN(staging_bill_df, legislator_df):
-    '''Create a dataframe with bill_num_unique, secondary_sponsors, primary_sponsor_id, and rep_score.
-    rep_score is a ratio of number of republican sponsors (primary and secondary) to total number of sponsors.
+    """Create a dataframe with bill_num_unique, secondary_sponsors, primary_sponsor_id and rep_score.
+    rep_score is a ratio of number of republican sponsors (primary and secondary) to total number of sponsors. 
 
-    Input
-    staging_bill_df: pandas dataframe loaded from wa_leg_staging database, bill table
-    legislator_df: pandas dataframe loaded from wa_leg_staging database, legislator table'''
+    Args:
+        staging_bill_df: pandas dataframe loaded from wa_leg_staging database, bill table
+        legislator_df: pandas dataframe loaded from wa_leg_staging database, legislator table
+        
+    Returns:
+        rep_score_df: pandas dataframe"""
 
     rep_score_df = staging_bill_df[['secondary_sponsors', 'bill_num_unique', 'primary_sponsor_id']]
     rep_score_df.drop_duplicates(keep='first', inplace=True)
@@ -512,16 +467,23 @@ def create_rep_score_STEP_SEVEN(staging_bill_df, legislator_df):
 
 
 
-def create_loyalty_scores_df(clean_merged):
-    '''Calculate loyalty scores for each representative. 
-    Loyalty is calculated by taking'''
-    all_voters = clean_merged['voter_id'].unique()
+def create_loyalty_scores_df(merged_final):
+    """Calculate loyalty scores and percent_yea for each representative. 
+
+    Args:
+        merged_final: pandas dataframe loaded from wa_leg_staging database, merged_final table
+        
+    Returns:
+        loyalty_df: pandas dataframe
+    """
+
+    all_voters = merged_final['voter_id'].unique()
     loyalty_scores_list = []
     
     for voter in all_voters:
         loyalty_scores_dct = {}
         loyalty_scores_dct['voter_id'] = voter
-        votes = clean_merged[clean_merged['voter_id'] == voter]
+        votes = merged_final[merged_final['voter_id'] == voter]
         loyalty_scores_dct['percent_yea'] = np.mean(votes['vote'])
         loyalties = []
         for i, row in votes.iterrows():
@@ -545,10 +507,14 @@ def create_loyalty_scores_df(clean_merged):
 
 
 def create_staging_current_bill_text_df(current_bill_df):
-    '''Create staging_current_bill_text using unique bills from current_bill_df_df and scraping the urls.
-    Input
-    current_bill_df: pandas dataframe loaded from wa_leg_raw database, current_bill table
-    '''
+    """Create staging_current_bill_text using unique bills from current_bill_df_df and scraping the urls.
+
+    Args:
+        current_bill_df: pandas dataframe loaded from wa_leg_raw database, current_bill table
+        
+    Returns:
+        current_bill_text_df: pandas dataframe
+    """
     
     current_bill_text_df = current_bill_df[['biennium', 'bill_id', 'htm_url']]
     current_bill_text_df['bill_text'] = ''
@@ -561,3 +527,84 @@ def create_staging_current_bill_text_df(current_bill_df):
             except:
                 continue
     return current_bill_text_df
+
+
+
+# These functions will be transfered to classes. This is an example of such class.
+
+# class CreateStagingLegislatorDataframe(BaseEstimator, TransformerMixin):
+    # """Merge votes_df, committee_df and missing_legislator_df and clean data to create legislator_df"""
+    
+    # def __init__(self, vote_df, committee_member_df, missing_leg_info_df):
+    #     """Input
+    #        votes_df: pandas dataframe loaded from wa_leg_raw database, vote_api table
+    #        committee_member_df: pandas dataframe loaded from wa_leg_raw database, committee_member_api table
+    #        missing_legislator_df: pandas dataframe loaded missing_legislators.csv"""
+    #     self.vote_df = vote_df
+    #     self.committee_member_df = committee_member_df
+    #     self.missing_leg_info_df = missing_leg_info_df
+    
+    # def fit(self, X=None, y=None):
+    #     return self
+
+    # def transform(self, X=None):
+    #     leg_info_from_vote_df = self.vote_df.loc[:, ['biennium', 'voter_id', 'voter_name', 'voting_agency']]
+    #     leg_info_from_vote_df.drop_duplicates(keep='first', inplace=True)
+
+    #     leg_info_from_cm_df = self.committee_member_df.loc[:, ['district', 'id', 'name', 'first_name', 'party']]
+    #     leg_info_from_cm_df = leg_info_from_cm_df.rename(index=str, columns={"id": "voter_id"})
+    #     leg_info_from_cm_df['last_name'] = leg_info_from_cm_df['name'].apply(lambda x: x.split()[1])
+    #     leg_info_from_cm_df.drop_duplicates(keep='first', inplace=True)
+
+    #     legislator_df = leg_info_from_vote_df.merge(leg_info_from_cm_df, how='outer', on='voter_id')
+    #     legislator_df.drop_duplicates(keep="first", inplace=True)
+
+    #     self.missing_leg_info_df['district'] = self.missing_leg_info_df['district'].apply(str)
+    #     self.missing_leg_info_df['voter_id'] = self.missing_leg_info_df['voter_id'].apply(str)
+
+    #     legislator_df = legislator_df.merge(self.missing_leg_info_df, how='outer', on='voter_id', suffixes=('', '_missing'))
+
+    #     legislator_df['first_name'] = legislator_df.apply(lambda x : replace_missing_first_name(x),axis=1)
+    #     legislator_df['party']      = legislator_df.apply(lambda x : replace_missing_party(x),     axis=1)
+    #     legislator_df['district']   = legislator_df.apply(lambda x : replace_missing_district(x),  axis=1)
+    #     legislator_df['last_name']  = legislator_df.apply(lambda x : replace_missing_last_name(x), axis=1)
+
+    #     legislator_df = legislator_df.drop(['voter_name', 'name', 'district_missing', 'party_missing', 'first_name_missing', 'last_name_missing', 'biennium'], axis=1)
+    #     legislator_df.drop_duplicates(keep='first', inplace=True)
+    #     legislator_df.columns = ['id', 'agency', 'district', 'first_name', 'party', 'last_name']
+    #     legislator_df['id'] = legislator_df['id'].apply(int)
+    #     legislator_df['district'] = legislator_df['district'].apply(int)
+
+    #     return legislator_df
+    
+    # @staticmethod
+    # def replace_missing_first_name(x):
+    #     if type(x['first_name']) == float:
+    #         return x['first_name_missing']
+    #     else:
+    #         return x['first_name']
+        
+    # @staticmethod
+    # def replace_missing_last_name(x):
+    #     if type(x['last_name']) == float:
+    #         return x['last_name_missing']
+    #     else:
+    #         return x['last_name']
+        
+    # @staticmethod
+    # def replace_missing_party(x):
+    #     if type(x['party']) == float:
+    #         if x['party_missing'] == 'R':
+    #             return 'Republican'
+    #         if x['party_missing'] == 'D':
+    #             return 'Democrat'
+    #     else:
+    #         return x['party']
+        
+        
+    # @staticmethod
+    # def replace_missing_district(x):
+    #     if type(x['district']) == float:
+    #         return x['district_missing']
+    #     else:
+    #         return x['district']
