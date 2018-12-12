@@ -3,6 +3,9 @@
 ## Summary
 Inside the Vote is a tool with the purpose of increasing transparency and accessibility of the Washington State Legislature. Using machine learning and statistical simulations I predict the probability that current State Senators and Representatives will vote "yea" on upcoming bills, and the probability that the bills will pass. Technologies used include Python, PostgreSQL, Selenium, Beautiful Soup and Amazon Web Services. 
 
+## Website
+The model is deployed [here](insidethevote.com)
+
 ## File Structure Summary
 Directory | Description
 ------------ | -------------
