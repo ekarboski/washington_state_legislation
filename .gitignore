@@ -2,3 +2,5 @@ __pycache__/
 .ipynb_checkpoints/
 geckodriver.log
 topic_staging.csv
+topic_staging_better.csv
+modeling/label_pickle.pkl
