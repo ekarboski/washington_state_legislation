@@ -3,9 +3,14 @@ import xml.etree.ElementTree as ET
 import pandas as pd
 
 def get_committee_data(biennium):
-    '''Input
-       biennium: str, for example '2015-16'
-       '''
+    """Retrieve committee data from WA State Legislative Web Services during a single biennium.
+    
+    Args: 
+        biennium (str): for example '2015-16'
+
+    Returns:
+        committee_data: pandas dataframe
+    """
 
     r = requests.get('http://wslwebservices.leg.wa.gov/CommitteeService.asmx/GetCommittees?biennium={}'.format(biennium))
     r.text
@@ -28,11 +33,16 @@ def get_committee_data(biennium):
 
 
 def get_committee_member_data(biennium, agency, committee_name):
-    '''Input
-       biennium: str, for example '2015-16'
-       agency: str, 'Senate' or 'House
-       commmittee_name: str, for example 'Education'
-       '''
+    """Retrieve committee member data from WA State Legislative Web Services for one committee during a single biennium.
+    
+    Args:
+        biennium (str): for example '2015-16'
+        agency (str): 'Senate' or 'House'
+        commmittee_name (str): for example 'Education'
+
+    Returns:
+        committee_member_data: pandas dataframe
+    """
     
     r = requests.get('http://wslwebservices.leg.wa.gov/CommitteeService.asmx/GetCommitteeMembers?biennium={}&agency={}&committeeName={}'.format(biennium, agency, committee_name))
     r.text
@@ -55,15 +65,20 @@ def get_committee_member_data(biennium, agency, committee_name):
         dct['committee_name'] = committee_name
         all_dcts.append(dct)
 
-    committee_data = pd.DataFrame(all_dcts)
-    return committee_data
+    committee_member_data = pd.DataFrame(all_dcts)
+    return committee_member_data
 
 
 def get_bill_data(biennium, documentClass):
-    '''Input
-       biennium: str, for example '2015-16'
-       documentClass: str, for example 'Bills'
-       '''
+    """Retrieve bill data from WA State Legislative Web Services during a single biennium.
+    
+    Args:
+        biennium (str): for example '2015-16'
+        documentClass (str): for example 'Bills'
+
+    Returns:
+        bill_data: pandas dataframe
+    """
     
     r = requests.get('http://wslwebservices.leg.wa.gov/LegislativeDocumentService.asmx/GetAllDocumentsByClass?biennium={}&documentClass={}'.format(biennium, documentClass))
     r.text
@@ -90,10 +105,15 @@ def get_bill_data(biennium, documentClass):
 
 
 def get_rollcall_data(biennium, billNumber):
-    '''Input
-       biennium: str, for example '2015-16'
-       billNumber: str, for example '1003'
-       '''
+    """Retrieve roll call data from WA State Legislative Web Services for a single bill during a single biennium.
+    
+    Args:
+        biennium (str): for example '2015-16'
+        billNumber (str): for example '1003'
+
+    Returns:
+        rollcall_data: pandas dataframe
+    """
 
     r = requests.get('http://wslwebservices.leg.wa.gov/LegislationService.asmx/GetRollCalls?biennium={}&billNumber={}'.format(biennium, billNumber))
     r.text
@@ -142,10 +162,15 @@ def get_rollcall_data(biennium, billNumber):
 
 
 def get_sponsor_data(biennium, billId):
-    '''Input
-       biennium: str, for example '2015-16'
-       billId: str, for example 'HB 1003'
-       '''
+    """Retrieve roll call data from WA State Legislative Web Services for a single bill during a single biennium.
+    
+    Args:
+        biennium (str): for example '2015-16'
+        billId (str): for example 'HB 1003'
+
+    Returns:
+        sponsor_data: pandas dataframe
+    """
     
     r = requests.get('http://wslwebservices.leg.wa.gov/LegislationService.asmx/GetSponsors?biennium={}&billId=string{}'.format(biennium, billId))
     r.text
@@ -170,12 +195,17 @@ def get_sponsor_data(biennium, billId):
 
         
 def get_and_reorganize_rollcall_data(biennium, billNumber):
-    '''Retrieves roll call data and organizes it so that each voter is given it's own line.
+    """Retrieves roll call data using get_rollcall_data and organizes it so that each voter 
+    is given it's own row.
     
-    Input
-       biennium: str, for example '2015-16'
-       billNumber: str, for example '1003'
-       '''
+    Args:
+       biennium (str): for example '2015-16'
+       billNumber (str): for example '1003'
+
+    Returns:
+        pandas dataframe
+
+    """
 
     rollcall_df = get_rollcall_data(biennium, billNumber)
 
@@ -193,13 +223,17 @@ def get_and_reorganize_rollcall_data(biennium, billNumber):
 
 
 def get_status_data(biennium, billNumber):
-    '''Input
-       biennium: str, for example '2015-16'
-       billNumber: str, for example '1003'
-       '''
+    """Retrieves bill status data from WA State Legislative Web Services for a single bill during a single biennium.
+    
+    Args:
+       biennium (str): for example '2015-16'
+       billNumber (str): for example '1003'
+
+    Returns:
+        dictionary
+    """
 
     r = requests.get('http://wslwebservices.leg.wa.gov/LegislationService.asmx/GetCurrentStatus?biennium={}&billNumber={}'.format(biennium, billNumber))
-    r.text
     root = ET.fromstring(r.text)
     
     dct = {}

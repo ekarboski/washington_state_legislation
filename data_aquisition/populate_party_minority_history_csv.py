@@ -4,6 +4,8 @@ import pandas as pd
 '''
 The table below was created manually using the report "State of Washington Members of the Legislature
 1889-2018". The report can be found here: http://leg.wa.gov/History/Legislative/Documents/MembersOfLeg2018.pdf.
+
+Running this file will populate party_minority_history.csv.
 '''
 
 party_minority_history = [{'biennium': '1991-92', 'agency': 'Senate', 'minority_party': 'D'},

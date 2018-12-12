@@ -5,11 +5,14 @@ from bs4 import BeautifulSoup
 
 
 def scrape_bill_topic_table(year):
-    '''Scrape data from apps.leg.wa.gov/billsbytopic organize into a dataframe with the following columns:
-       bill_id, bill_topic, bill_topic_expanded.
+    """Scrape data from apps.leg.wa.gov/billsbytopic and organize into a dataframe 
        
-       year: str in format '2015' 
-       '''
+    Args:
+        year (str): for example '2015' 
+    
+    Returns:
+        pandas dataframe
+    """
     
     browser = Firefox()
     browser.get('http://apps.leg.wa.gov/billsbytopic/Results.aspx?year={}'.format(year))
@@ -43,7 +46,14 @@ def scrape_bill_topic_table(year):
 
 
 def scrape_bill_url(url):
-    '''Scrape the bill url and put all text into one string.'''
+    """Scrape all text from the bill url and put into one string.
+    
+    Args:
+        url (str): url provided by bill_api
+        
+    Returns:
+        text (str): text of bill    
+        """
 
     url = url.replace(' ', '%20')
     html = urllib.request.urlopen(url).read()

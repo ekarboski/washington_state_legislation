@@ -7,6 +7,8 @@ The table below was created manually using the report "State of Washington Membe
 The missing legislators were identified by recording which legislators were included in wa_leg_raw: vote_api, 
 but were not included in wa_leg_raw: committee_member_api. This meant that party and district information were
 missing for these legislators.
+
+Running this file will populate missing_legislators_csv.
 '''
 
 missing_legislators = [{'name': 'Ann Anderson', 'voter_id': '7', 'district': '42', 'party': 'R'},
