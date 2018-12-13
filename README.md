@@ -28,18 +28,18 @@ This tool will open the door for the everyday citizen to follow and weigh in on 
 ### Data Collection
 ![Data Sources](images/data_sources.png)
 
- - Washington State Legislative Web Services provided the bulk of the data used in this project. Data from this API included:
-  * bill features (name, type, dates, urls to text)
-  * bill status
-  * bill sponsors (primary, secondary)
-  * current and past legislators (id, party, name, district)
+- Washington State Legislative Web Services provided the bulk of the data used in this project. Data from this API included:
+    * bill features (name, type, dates, urls to text)
+    * bill status
+    * bill sponsors (primary, secondary)
+    * current and past legislators (id, party, name, district)
 - Other data was scraped from the following website:
- * http://apps.leg.wa.gov/billsbytopic/default.aspx?year=2019 provided topic labels for each bill
- * The API provided a url for each bill. These were scraped to obtain the bill text.
+    * http://apps.leg.wa.gov/billsbytopic/default.aspx?year=2019 provided topic labels for each bill
+    * The API provided a url for each bill. These were scraped to obtain the bill text.
 - A few tables were created manually by me:
- * There were missing legislators from the API. I filled these in manually using this report: http://leg.wa.gov/History/Legislative/Documents/MembersOfLeg2018.pdf
- * I manually grouped the 1700 bill topics in to ~370 major categories
- * I created a table to record which party was in the minority each year
+    * There were missing legislators from the API. I filled these in manually using this report: http://leg.wa.gov/History/Legislative/Documents/MembersOfLeg2018.pdf
+    * I manually grouped the 1700 bill topics in to ~370 major categories
+    * I created a table to record which party was in the minority each year
 
 ### Data Understanding
 - 100,000 bills were used, dating back to 1991
@@ -88,6 +88,6 @@ The final model was a Random Forest Classifier with 1000 trees and a max_depth o
 - Roc-auc score: 0.801
 
 ## Tools Used
-![Final Model](images/final_model.png)
+![Final Model](images/tools_used.png)
 
 
