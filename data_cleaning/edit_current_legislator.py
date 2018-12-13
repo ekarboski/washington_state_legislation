@@ -9,6 +9,7 @@ con = engine.connect()
 current_legislator_df = pd.read_sql_query('select * from "current_legislator"',con=engine)
 
 def change_agency_to_int(agency):
+    """Change agency (strt) to int. House = 0, Senate = 1"""
     if agency == 'House':
         return 0
     if agency == 'Senate':
@@ -18,6 +19,18 @@ def change_agency_to_int(agency):
 # current_legislator_df.rename(columns={'id': 'voter_id', 'agency': 'voting_agency'}, inplace=True)
 
 def filter_out_duplicates_from_current_leg(row):
+    """Some legislators have had many previous roles. Over the years they may have changed from a 
+    representative to a senator, changed parties or districts. This function will filter out the past
+    versions of legislators so that all that remains are the version that aligns with their current 
+    agency, party and district.
+
+    Args:
+        row: row of dataframe
+    
+    Returns: boolean. True if the row has current info, False if row had past info.
+
+    Example use: df.apply(filter_out_duplicates_from_current_leg, axis=1)
+    """
     if row['last_name'] == 'Angel' and row['voting_agency'] == 0:
         return False
     if row['last_name'] == 'Bailey' and row['voting_agency'] == 0:

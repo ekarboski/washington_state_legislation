@@ -7,9 +7,8 @@ import sqlalchemy
 
 from WA_state_API_functions import get_status_data
 
-
 def save_status_data():
-    '''This data will be collected to identify which bills have yet to be voted on.
+    '''This data will be collected to identify which bills have not yet been voted on.
 
     Creates table: status_api
     '''  
@@ -39,6 +38,15 @@ def save_status_data():
     
     # Filter out bills that have passed or failed
     def in_process(history_line):
+        """The history_line has indicators about whether the bill has been voted on. This functions uses
+        those indicators to filter out bills that are no longer in process.
+        
+        Args: 
+            history_line: feature of status_df
+        
+        Returns: 0 if history line contains indicator (bill has been voted on)
+                 1 if history line contains indicator (bill has not been voted on)
+        """
         history_line = history_line.lower()
         done_indications = ['adopted', 'effective date', 'failed', 'filed with secretary of state', 
                             'vetoed', 'chapter']
