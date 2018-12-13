@@ -5,7 +5,7 @@ import pandas as pd
 import psycopg2 as pg2
 import sqlalchemy
 
-from WA_state_API_functions import get_status_data
+from data_aquisition.WA_state_API_functions import get_status_data
 
 def save_status_data():
     '''This data will be collected to identify which bills have not yet been voted on.
