@@ -163,14 +163,16 @@ def create_sample_train_test(clean, n=300000):
     sample_test = sample[sample['vote_date'] > '2017-07-01T00:00:00.000000000']
     
     loyalty_scores_df = create_loyalty_scores_df(sample_train)
-    loy_dem_average = np.mean(sample_train[sample_train['party'] == 0]['loyalty_score'])
-    loy_rep_average = np.mean(sample_train[sample_train['party'] == 1]['loyalty_score'])
-    yea_dem_average = np.mean(sample_train[sample_train['party'] == 0]['percent_yea'])
-    yea_rep_average = np.mean(sample_train[sample_train['party'] == 1]['percent_yea'])
     
     # Add loyalty scores to train
     sample_train = sample_train.merge(loyalty_scores_df, how = 'left', on='voter_id')
     sample_train = sample_train.drop('index', axis=1)
+
+    # Determine party averages
+    loy_dem_average = np.mean(sample_train[sample_train['party'] == 0]['loyalty_score'])
+    loy_rep_average = np.mean(sample_train[sample_train['party'] == 1]['loyalty_score'])
+    yea_dem_average = np.mean(sample_train[sample_train['party'] == 0]['percent_yea'])
+    yea_rep_average = np.mean(sample_train[sample_train['party'] == 1]['percent_yea'])
     
     # Add loyalty scores to test
     sample_test = sample_test.merge(loyalty_scores_df, how = 'left', on='voter_id')
