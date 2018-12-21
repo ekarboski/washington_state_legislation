@@ -1,13 +1,16 @@
 import pandas as pd
 import numpy as np
+import pickle
 
 import psycopg2
 from sqlalchemy import create_engine
 
 
+
 def load_label_data():
-    engine = create_engine('postgresql://localhost:5432/wa_leg_label')
-    label_df = pd.read_sql_query('select * from "label"',con=engine)
+    #engine = create_engine('postgresql://localhost:5432/wa_leg_label')
+    #label_df = pd.read_sql_query('select * from "label"',con=engine)
+    label_df = pd.read_pickle('label_pickle.pkl')
     return label_df
 
 label_df = load_label_data()
@@ -40,11 +43,11 @@ def select_one_bill_from_label_df(bill_id):
 
     return sorted_senate, sorted_house, rep_score, dem_score, url
 
-def get_bill_text(bill_id):
-    engine = create_engine('postgresql://localhost:5432/wa_leg_staging')
-    current_bill_text_df = pd.read_sql_query('select * from "current_bill_text"',con=engine)
-    bill = current_bill_text_df[current_bill_text_df['bill_id'] == 'ESHB 2299']
-    return bill.iloc[0, -1]
+#def get_bill_text(bill_id):
+#    engine = create_engine('postgresql://localhost:5432/wa_leg_staging')
+#    current_bill_text_df = pd.read_sql_query('select * from "current_bill_text"',con=engine)
+#    bill = current_bill_text_df[current_bill_text_df['bill_id'] == 'ESHB 2299']
+#    return bill.iloc[0, -1]
 
 def calculate_lean_percentages(table):
     leaning_yea = len(table[table['predicted_vote'] > 0.65]) / len(table)
