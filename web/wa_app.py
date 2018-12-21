@@ -17,11 +17,6 @@ def get_bill_info(bill_id='HB 2145'):
     selected_senate_table, selected_house_table, rep_score, dem_score, bill_url = select_one_bill_from_label_df(bill_id)
     senate_table = selected_senate_table.to_dict(orient='records')
     house_table = selected_house_table.to_dict(orient='records')
-<<<<<<< HEAD:zeta/wa_app.py
-   # bill_text = get_bill_text(bill_id)
-=======
-    # bill_text = get_bill_text(bill_id)
->>>>>>> 5c2ca799f51f0280abd999c5c9c3e630e5384e03:web/wa_app.py
     s_leaning_yea, s_leaning_nay, s_undecided = calculate_lean_percentages(selected_senate_table)
     h_leaning_yea, h_leaning_nay, h_undecided = calculate_lean_percentages(selected_house_table)
     house_table_html = render_template('house_table.html', house_table=house_table)
