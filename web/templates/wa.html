@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Inside the Vote</title>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="description" content="Zeta Template Project - Elements">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="/styles/bootstrap4/bootstrap.min.css">
+<link href="/plugins/fontawesome-free-5.0.1/css/fontawesome-all.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" type="text/css" href="/plugins/OwlCarousel2-2.2.1/owl.carousel.css">
+<link rel="stylesheet" type="text/css" href="/plugins/OwlCarousel2-2.2.1/owl.theme.default.css">
+<link rel="stylesheet" type="text/css" href="/plugins/OwlCarousel2-2.2.1/animate.css">
+<link rel="stylesheet" type="text/css" href="/plugins/js-flickr-gallery-1.24/js-flickr-gallery.css">
+<link href="/plugins/colorbox/colorbox.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" type="text/css" href="/styles/elements_styles.css">
+<link rel="stylesheet" type="text/css" href="/styles/elements_responsive.css">
+
+<script type="text/javascript" src="/brython.js"></script>
+<script type="text/javascript" src="/brython_stdlib.js"></script>
+</head>
+
+<body onload="brython(1)">
+
+<script type="text/python3">
+from browser import document, ajax, window
+import json
+import urllib
+import warnings
+
+def show_results(response):
+    if response.status!=200:
+        print(response.text)
+
+    bill_info = json.loads(response.text) 
+    for i in range(3):
+        document[f'bill_id_{i}'].html = bill_info['bill_id']
+    document['senate_table'].html = bill_info['senate_table_html']
+    document['house_table'].html = bill_info['house_table_html']
+    
+        
+def get_bill_id(ev):
+    """Get bill_id to render bill stats."""
+    req = ajax.ajax()
+    req.bind('complete', show_results)
+    bill_id = document['bill_search'].value
+    bill_id = bill_id.replace(' ', '%20')
+    req.open('GET', f'/bill_data/{bill_id}', True)
+    req.send()
+
+def go_to_bill_page(ev):
+    bill_id = document['bill_search'].value
+    bill_id = bill_id.replace(' ', '%20')
+    window.location.replace(f'/bill/{bill_id}')
+
+document["find_bill_button"].bind("click", go_to_bill_page)
+
+</script>
+
+<div class="super_container">
+    
+    <!-- Header -->
+
+    <header class="header d-flex flex-row justify-content-end align-items-center">
+
+        <!-- Logo -->
+        <!-- <div class="logo_container mr-auto">
+            <div class="logo">
+                <a href="#"><span>z</span>zeta<span>.</span></a>
+            </div>
+        </div> -->
+
+        <!-- Main Navigation -->
+        <nav class="main_nav justify-self-end">
+            <ul class="nav_items">
+                <li class="active"><a href="wa.html"><span>Home</span></a></li>
+                <li><a href="/about"><span>About</span></a></li>
+            </ul>
+        </nav>
+
+        <!-- Hamburger -->
+        <div class="hamburger_container">
+            <span class="hamburger_text">Menu</span>
+            <span class="hamburger_icon"></span>
+        </div>
+
+    </header>
+
+    <!-- Menu -->
+
+    <div class="fs_menu_overlay"></div>
+    <div class="fs_menu_container">
+        <div class="fs_menu_shapes"><img src="/images/wa-rainier.jpg" alt=""></div>
+        <nav class="fs_menu_nav">
+            <ul class="fs_menu_list">
+                <li><a href="#"><span><span>H</span>Home</span></a></li>
+                <li><a href="/about"><span><span>A</span>About</span></a></li>
+            </ul>
+        </nav>
+        <div class="fs_social_container d-flex flex-row justify-content-end align-items-center">
+            <ul class="fs_social">
+                <!-- <li><a href="#"><i class="fab fa-pinterest trans_300"></i></a></li>
+                <li><a href="#"><i class="fab fa-facebook-f trans_300"></i></a></li>
+                <li><a href="#"><i class="fab fa-twitter trans_300"></i></a></li>
+                <li><a href="#"><i class="fab fa-dribbble trans_300"></i></a></li>
+                <li><a href="#"><i class="fab fa-behance trans_300"></i></a></li> -->
+                <li><a href="https://www.linkedin.com/in/emilykarboski"><i class="fab fa-linkedin-in trans_300"></i></a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Home -->
+
+    <div class="home prlx_parent">
+
+        <!-- Parallax Background -->
+        <div class="home_background prlx" style="background-image:url(/images/wa-rainier_2.jpg)"></div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="home_content">
+                        <h1>Inside the Vote</h1>
+                        <span>Washington state</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="home_social_container d-flex flex-row justify-content-end align-items-center">
+        <ul class="home_social">
+            <!-- <li><a href="#"><i class="fab fa-pinterest trans_300"></i></a></li>
+            <li><a href="#"><i class="fab fa-facebook-f trans_300"></i></a></li>
+            <li><a href="#"><i class="fab fa-twitter trans_300"></i></a></li>
+            <li><a href="#"><i class="fab fa-dribbble trans_300"></i></a></li>
+            <li><a href="#"><i class="fab fa-behance trans_300"></i></a></li> -->
+            <li><a href="https://www.linkedin.com/in/emilykarboski"><i class="fab fa-linkedin-in trans_300"></i></a></li>
+        </ul>
+    </div>	
+
+    <!-- Elements Content -->
+
+    <div class="elements_content">
+        
+        <div class="container">
+
+            <!-- Buttons -->
+            <div class="row">
+                <div class="col">
+                    <div class="elements_section">
+                        <div class="elements_title">
+                            <h3>Choose Bill</h3>
+                        </div>
+			<p> Enter a bill id in the field below. Suggested bills: HB 2937, HB 2145, ESHB 2437, SSB 6132, HB 1806, 2SHB 1168</p>
+                        <div class="elements_buttons_container d-flex flex-sm-row flex-column">
+                            <input id="bill_search" autocomplete="off" value="" width="13px" height="7px">	
+
+                            <!-- Button -->
+            
+                            <div class="button element_button">
+                                <a href="#" id="find_bill_button" class="d-flex flex-row align-items-center justify-content-center">
+                                    find bill
+                                    <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                         width="13px" height="7px" viewBox="0 0 13 7" enable-background="new 0 0 13 7" xml:space="preserve">
+                                    <polygon id="arrow_poly_1" class="arrow_poly" points="13,3.5 9,0 9,3 0,3 0,4 9,4 9,7 "></polygon>
+                                    </svg>
+                                </a>
+                            </div>
+                        <!-- <script type="text/python3">
+                            from browser import document, html
+
+                            def show_values(event):
+                                input = document["bill_search"].value
+
+                            document["find_bill_button"].bind("click", show_values)
+                    
+                        </script> -->
+    
+                        </div>
+                        
+                    </div>
+
+
+                    <!-- Loaders -->
+
+                    <div class="elements_section">
+                        <div class="elements_title">
+                            <h3>  info on <span id="bill_id_0">{{ bill_id }}</span></h3>
+                        </div>
+                        
+                        <div class="row">
+                            <!-- <div class="col-lg-6"> -->
+
+                                    <!-- <div class="elements_accordions">
+
+                                        <div class="accordion_container">
+
+                                            <div class="accordion d-flex flex-row align-items-center"> View Bill Topics</div>
+                                            <div class="accordion_panel">
+                                                <p>Placeholder</p>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="accordion_container">
+
+                                            <div class="accordion d-flex flex-row align-items-center"> View Bill Sponsors</div>
+                                            <div class="accordion_panel">
+                                                <p>Placeholder</p>
+                                            </div>
+                                            
+                                        </div>
+
+                                    </div> -->
+                            <!-- </div> -->
+                            <div class="col-lg-6">
+                                <!-- Button --> 
+                                <div class="elements_buttons_container d-flex flex-sm-row flex-column">
+                                    <div class="button element_button button_black">
+                                            <a href={{ bill_url }} class="d-flex flex-row align-items-center justify-content-center">
+                                                view bill
+                                                <svg version="1.1" id="Layer_3" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                                                    width="13px" height="7px" viewBox="0 0 13 7" enable-background="new 0 0 13 7" xml:space="preserve">
+                                                <polygon id="arrow_poly_3" class="arrow_poly" points="13,3.5 9,0 9,3 0,3 0,4 9,4 9,7 "></polygon>
+                                                </svg>
+                                            </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    <div class="elements_section">
+                        <div class="row elements_loaders_container">
+                            <div class="col-lg-3">
+                                <!-- Loader -->
+                                <div class="loader" data-perc={{ dem_score }}><span>Democrat Sponsors</span></div>
+                            </div>
+                            <div class="col-lg-3">
+                                <!-- Loader -->
+                                <div class="loader" data-perc={{ rep_score }}><span>Republican Sponsors</span></div>
+                            </div>
+                            <div class="col-lg-3">
+                                    <!-- Loader -->
+                                    <div class="loader" data-perc="0.7"><span>Prob bill passes</span></div>
+                                </div>
+                        </div>
+                    </div>
+
+    <!-- Progress Bars -->
+
+    <div class="elements_section">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="elements_title">
+                        <h3>Predicted Senate Votes for <span id="bill_id_2">{{ bill_id }}</span></h3>
+                    </div>
+                        <div class="elements_progress_bars" >
+
+                            <div class="pbar_container" id="senate_table">{{ senate_table_html | safe}}</div>
+                        </div>
+                        
+                </div>
+                <div class="col-lg-6">
+                    <div class="milestones_container d-flex flex-lg-row flex-column">
+                            <!-- Milestone -->
+                            <div class="col-lg-3">
+                                <div class="milestone">
+                                    <div class="milestone_counter" data-end-value="49">0</div>
+                                    <div class="milestone_text">Sens</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="milestone">
+                                        <div class="milestone_counter" data-end-value="27">0</div>
+                                        <div class="milestone_text">Democrat</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="milestone">
+                                        <div class="milestone_counter" data-end-value="22">0</div>
+                                        <div class="milestone_text">Republican</div>
+                                </div>
+                            </div>
+                    </div>
+                
+                    <div class="row elements_loaders_container">
+                            <div class="col-lg-3"></div>
+                            <div class="col-lg-3">
+                                <!-- Loader -->
+                                <div class="loader" data-perc={{ s_leaning_yea }}><span>Leaning Yea</span></div>
+                            </div>
+                        </div>
+                        <div class="row elements_loaders_container">
+                            <div class="col-lg-3"></div>
+                            <div class="col-lg-3">
+                                <!-- Loader -->
+                                <div class="loader" data-perc={{ s_undecided }}><span>Undecided</span></div>
+                            </div>
+                        </div>
+                        <div class="row elements_loaders_container">
+                            <div class="col-lg-3"></div>
+                            <div class="col-lg-3">
+                                <!-- Loader -->
+                                <div class="loader" data-perc={{ s_leaning_nay }}><span>Leaning Nay</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            
+    </div>
+            
+
+    <!-- Progress Bars -->
+
+    <div class="elements_section">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="elements_title">
+                    <h3>Predicted House Votes for <span id="bill_id_1">{{ bill_id }}</span></h3>
+                </div>
+                    <div class="elements_progress_bars">
+
+                        <div class="pbar_container" id="house_table">{{ house_table_html | safe}}</div>
+                    </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="milestones_container d-flex flex-lg-row flex-column">
+                        <!-- Milestone -->
+                        <div class="col-lg-3">
+                            <div class="milestone">
+                                <div class="milestone_counter" data-end-value="98">0</div>
+                                <div class="milestone_text">Reps</div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="milestone">
+                                    <div class="milestone_counter" data-end-value="50">0</div>
+                                    <div class="milestone_text">Democrat</div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="milestone">
+                                    <div class="milestone_counter" data-end-value="48">0</div>
+                                    <div class="milestone_text">Republican</div>
+                            </div>
+                        </div>
+                </div>	
+                
+                <div class="row elements_loaders_container">
+                        <div class="col-lg-3"></div>
+                        <div class="col-lg-3">
+                            <!-- Loader -->
+                            <div class="loader" data-perc={{ h_leaning_yea }}><span>Leaning Yea</span></div>
+                        </div>
+                    </div>
+                    <div class="row elements_loaders_container">
+                        <div class="col-lg-3"></div>
+                        <div class="col-lg-3">
+                            <!-- Loader -->
+                            <div class="loader" data-perc={{ h_undecided }}><span>Undecided</span></div>
+                        </div>
+                    </div>
+                    <div class="row elements_loaders_container">
+                        <div class="col-lg-3"></div>
+                        <div class="col-lg-3">
+                            <!-- Loader -->
+                            <div class="loader" data-perc={{ h_leaning_nay }}><span>Leaning Nay</span></div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+
+                    <!-- Milestones -->
+
+                    <div class="elements_section">
+                        <div class="elements_title">
+                            <h3>Stats</h3>
+                        </div>
+                        <div class="milestones_container d-flex flex-lg-row flex-column">
+                        
+                            <!-- Milestone -->
+                            <div class="milestone">
+                                <div class="milestone_counter" data-end-value="3042">0</div>
+                                <div class="milestone_text">Bills in process</div>
+                            </div>
+
+                            <!-- Milestone -->
+                            <div class="milestone">
+                                <div class="milestone_counter" data-end-value="1410">0</div>
+                                <div class="milestone_text">new bills in 2018</div>
+                            </div>
+
+                            <!-- Milestone -->
+                            <div class="milestone">
+                                <div class="milestone_counter" data-end-value="685">0</div>
+                                <div class="milestone_text">bills passed in 2018</div>
+                            </div>
+
+                            <!-- Milestone -->
+                            <div class="milestone">
+                                <div class="milestone_counter" data-end-value="98">0</div>
+                                <div class="milestone_text">Representatives</div>
+                            </div>
+
+                            <!-- Milestone -->
+                            <div class="milestone">
+                                <div class="milestone_counter" data-end-value="42">0</div>
+                                <div class="milestone_text">Senators</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+
+    <footer class="footer">
+        <div class="container">
+            <div class="row footer_content d-flex flex-sm-row flex-column align-items-center">
+                <div class="col-sm-6 cr text-sm-left text-center">
+                    <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. --></p>
+                </div>
+                <div class="col-sm-6 text-sm-right text-center">
+                    <div class="footer_social_container">
+                        <ul class="footer_social">
+                            <!-- <li><a href="#"><i class="fab fa-pinterest trans_300"></i></a></li>
+                            <li><a href="#"><i class="fab fa-facebook-f trans_300"></i></a></li>
+                            <li><a href="#"><i class="fab fa-twitter trans_300"></i></a></li>
+                            <li><a href="#"><i class="fab fa-dribbble trans_300"></i></a></li>
+                            <li><a href="#"><i class="fab fa-behance trans_300"></i></a></li>
+                            <li><a href="#"><i class="fab fa-linkedin-in trans_300"></i></a></li> -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</div>
+
+<script src="/js/jquery-3.2.1.min.js"></script>
+<script src="/styles/bootstrap4/popper.js"></script>
+<script src="/styles/bootstrap4/bootstrap.min.js"></script>
+<script src="/plugins/greensock/TweenMax.min.js"></script>
+<script src="/plugins/greensock/TimelineMax.min.js"></script>
+<script src="/plugins/scrollmagic/ScrollMagic.min.js"></script>
+<script src="/plugins/greensock/animation.gsap.min.js"></script>
+<script src="/plugins/greensock/ScrollToPlugin.min.js"></script>
+<script src="/plugins/progressbar/progressbar.min.js"></script>
+<script src="/plugins/OwlCarousel2-2.2.1/owl.carousel.js"></script>
+<script src="/plugins/easing/easing.js"></script>
+<script src="/js/elements_custom.js"></script>
+</body>
+
+</html>
