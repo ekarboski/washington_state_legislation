@@ -2,17 +2,14 @@ import pandas as pd
 import numpy as np
 import pickle
 
-
+import psycopg2
+from sqlalchemy import create_engine
 
 
 def load_label_data():
-<<<<<<< HEAD
     engine = create_engine('postgresql://localhost:5432/wa_leg_label')
     label_df = pd.read_sql_query('select * from "label_second"',con=engine)
     # label_df = pd.read_pickle('../../label_pickle.pkl')
-=======
-    label_df = pd.read_pickle('../../label_pickle.pkl')
->>>>>>> 10f5c7e3539eb3cf7d2c9f880b8cfc742dca0d54
     return label_df
 
 label_df = load_label_data()

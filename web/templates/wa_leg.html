@@ -74,7 +74,7 @@ document["find_bill_button"].bind("click", go_to_bill_page)
         <nav class="main_nav justify-self-end">
             <ul class="nav_items">
                 <li class="active"><a href="wa.html"><span>Home</span></a></li>
-                <li><a href="about"><span>About</span></a></li>
+                <li><a href="/about"><span>About</span></a></li>
             </ul>
         </nav>
 
@@ -93,9 +93,8 @@ document["find_bill_button"].bind("click", go_to_bill_page)
         <div class="fs_menu_shapes"><img src="/images/wa-rainier.jpg" alt=""></div>
         <nav class="fs_menu_nav">
             <ul class="fs_menu_list">
-                <li><a href="#"><span><span>E</span>Home</span></a></li>
-                <li><a href="#"><span><span>B</span>About</span></a></li>
-                <li><a href="#"><span><span>C</span>Contact</span></a></li>
+                <li><a href="#"><span><span>H</span>Home</span></a></li>
+                <li><a href="/about"><span><span>A</span>About</span></a></li>
             </ul>
         </nav>
         <div class="fs_social_container d-flex flex-row justify-content-end align-items-center">
@@ -152,8 +151,9 @@ document["find_bill_button"].bind("click", go_to_bill_page)
                         <div class="elements_title">
                             <h3>Choose Bill</h3>
                         </div>
+			<p> Enter a bill id in the field below. Suggested bills: HB 2937, HB 2145, ESHB 2437, SSB 6132, HB 1806, 2SHB 1168</p>
                         <div class="elements_buttons_container d-flex flex-sm-row flex-column">
-                            <input id="bill_search" autocomplete="off" value="HB 2937" width="13px" height="7px">	
+                            <input id="bill_search" autocomplete="off" value="" width="13px" height="7px">	
 
                             <!-- Button -->
             
@@ -253,127 +253,13 @@ document["find_bill_button"].bind("click", go_to_bill_page)
             <div class="row">
                 <div class="col-lg-6">
                     <div class="elements_title">
-                        <h3>Predicted Senate Votes for <span id="bill_id_2">{{ bill_id }}</span></h3>
+                        <h3>Predicted Votes for <span id="bill_id_2">{{ leg_table[0]['first_name'] }}</span></h3>
                     </div>
                         <div class="elements_progress_bars" >
 
-                            <div class="pbar_container" id="senate_table">{{ senate_table_html | safe}}</div>
+                            <div class="pbar_container" id="senate_table">{{ leg_table_html | safe}}</div>
                         </div>
                         
-                </div>
-                <div class="col-lg-6">
-                    <div class="milestones_container d-flex flex-lg-row flex-column">
-                            <!-- Milestone -->
-                            <div class="col-lg-3">
-                                <div class="milestone">
-                                    <div class="milestone_counter" data-end-value="49">0</div>
-                                    <div class="milestone_text">Sens</div>
-                                </div>
-                            </div>
-                            <div class="col-lg-3">
-                                <div class="milestone">
-                                        <div class="milestone_counter" data-end-value="27">0</div>
-                                        <div class="milestone_text">Democrat</div>
-                                </div>
-                            </div>
-                            <div class="col-lg-3">
-                                <div class="milestone">
-                                        <div class="milestone_counter" data-end-value="22">0</div>
-                                        <div class="milestone_text">Republican</div>
-                                </div>
-                            </div>
-                    </div>
-                
-                    <div class="row elements_loaders_container">
-                            <div class="col-lg-3"></div>
-                            <div class="col-lg-3">
-                                <!-- Loader -->
-                                <div class="loader" data-perc={{ s_leaning_yea }}><span>Leaning Yea</span></div>
-                            </div>
-                        </div>
-                        <div class="row elements_loaders_container">
-                            <div class="col-lg-3"></div>
-                            <div class="col-lg-3">
-                                <!-- Loader -->
-                                <div class="loader" data-perc={{ s_undecided }}><span>Undecided</span></div>
-                            </div>
-                        </div>
-                        <div class="row elements_loaders_container">
-                            <div class="col-lg-3"></div>
-                            <div class="col-lg-3">
-                                <!-- Loader -->
-                                <div class="loader" data-perc={{ s_leaning_nay }}><span>Leaning Nay</span></div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                </div>
-            </div>
-            
-    </div>
-            
-
-    <!-- Progress Bars -->
-
-    <div class="elements_section">
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="elements_title">
-                    <h3>Predicted House Votes for <span id="bill_id_1">{{ bill_id }}</span></h3>
-                </div>
-                    <div class="elements_progress_bars">
-
-                        <div class="pbar_container" id="house_table">{{ house_table_html | safe}}</div>
-                    </div>
-            </div>
-
-            <div class="col-lg-6">
-                <div class="milestones_container d-flex flex-lg-row flex-column">
-                        <!-- Milestone -->
-                        <div class="col-lg-3">
-                            <div class="milestone">
-                                <div class="milestone_counter" data-end-value="98">0</div>
-                                <div class="milestone_text">Reps</div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3">
-                            <div class="milestone">
-                                    <div class="milestone_counter" data-end-value="50">0</div>
-                                    <div class="milestone_text">Democrat</div>
-                            </div>
-                        </div>
-                        <div class="col-lg-3">
-                            <div class="milestone">
-                                    <div class="milestone_counter" data-end-value="48">0</div>
-                                    <div class="milestone_text">Republican</div>
-                            </div>
-                        </div>
-                </div>	
-                
-                <div class="row elements_loaders_container">
-                        <div class="col-lg-3"></div>
-                        <div class="col-lg-3">
-                            <!-- Loader -->
-                            <div class="loader" data-perc={{ h_leaning_yea }}><span>Leaning Yea</span></div>
-                        </div>
-                    </div>
-                    <div class="row elements_loaders_container">
-                        <div class="col-lg-3"></div>
-                        <div class="col-lg-3">
-                            <!-- Loader -->
-                            <div class="loader" data-perc={{ h_undecided }}><span>Undecided</span></div>
-                        </div>
-                    </div>
-                    <div class="row elements_loaders_container">
-                        <div class="col-lg-3"></div>
-                        <div class="col-lg-3">
-                            <!-- Loader -->
-                            <div class="loader" data-perc={{ h_leaning_nay }}><span>Leaning Nay</span></div>
-                        </div>
-                    </div>
-                </div>
-        </div>
-    </div>
 
                     <!-- Milestones -->
 
