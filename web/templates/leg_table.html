@@ -1,0 +1,8 @@
+<ul class="progress_bar_container col_12 clearfix">
+    {% for row in leg_table %}
+    <li class="pb_item">
+        <div id="skill_{{loop.index}}_pbar" class="skill_bars" data-perc={{ row['predicted_vote'] }}></div>
+        <h5>{{ row['bill_id'] }}</h5>
+    </li>
+    {% endfor %}
+</ul>

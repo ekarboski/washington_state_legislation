@@ -7,9 +7,9 @@ from sqlalchemy import create_engine
 
 
 def load_label_data():
-    # engine = create_engine('postgresql://localhost:5432/wa_leg_label')
-    # label_df = pd.read_sql_query('select * from "label"',con=engine)
-    label_df = pd.read_pickle('../label_pickle.pkl')
+    engine = create_engine('postgresql://localhost:5432/wa_leg_label')
+    label_df = pd.read_sql_query('select * from "label_second"',con=engine)
+    # label_df = pd.read_pickle('../../label_pickle.pkl')
     return label_df
 
 label_df = load_label_data()
@@ -41,6 +41,18 @@ def select_one_bill_from_label_df(bill_id):
     url = url.replace(' ', '%20')
 
     return sorted_senate, sorted_house, rep_score, dem_score, url
+
+
+def select_one_leg_from_label_df(last_name):
+    '''Select legislator from label_df that matches the inputted bill_num and return pandas dataframes of 
+    the senate and the house, as well as the rep_score and dem_score for the bill.'''
+    selected_label_df = label_df[label_df['last_name'] == last_name]
+    selected_label_df['party'] =  selected_label_df['party'].apply(change_party_to_letter)
+
+    sorted_leg = selected_label_df.sort_values('predicted_vote')
+    sorted_leg = sorted_leg.reset_index().drop('index', axis=1)
+
+    return sorted_leg
 
 # def get_bill_text(bill_id):
 #     engine = create_engine('postgresql://localhost:5432/wa_leg_staging')
