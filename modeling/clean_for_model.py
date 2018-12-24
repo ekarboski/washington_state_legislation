@@ -196,6 +196,9 @@ def create_sample_train_test(clean, n=300000):
         else:
             return row['percent_yea']
     
+
+    sample_test['loyalty_score'] = sample_test['loyalty_score'].fillna(1000)
+    sample_test['percent_yea'] = sample_test['loyalty_score'].fillna(1000)
     sample_test['loyalty_score'] = sample_test.apply(fillna_loyalty, axis=1)
     sample_test['percent_yea'] = sample_test.apply(fillna_percent_yea, axis=1)
     
