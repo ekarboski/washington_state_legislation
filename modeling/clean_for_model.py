@@ -1,7 +1,8 @@
 import pandas as pd
 import numpy as np
 
-from data_cleaning.create_staging_tables import create_loyalty_scores_df
+from data_cleaning.create_staging_tables import create_loyalty_scores_df 
+from data_cleaning.edit_current_legislator import filter_out_duplicates_from_current_leg
 
 
 def prepare_bill_text_for_clean_df(bill_text_df):
