@@ -47,7 +47,7 @@ def run_single_vote_simulation(predicted_votes):
         return 0
 
 
-def compile_vote_simulations(predicted_votes, n=10000):
+def compile_vote_simulations(predicted_votes, n):
     """Run n simulations of legislators voting and return the proportion of time that the bill passed.
     
     Args:
@@ -65,7 +65,7 @@ def compile_vote_simulations(predicted_votes, n=10000):
     return sum(sim_results) / len(sim_results)
 
 
-def find_prob_of_bill_passing(label_df, bill_id, n):
+def find_prob_of_bill_passing(label_df, bill_id, n=10000):
     """Using the probabilities generated from compile_vote_simulations, return the probability that 
     the bill will pass in both agencies.
     
@@ -86,4 +86,22 @@ def find_prob_of_bill_passing(label_df, bill_id, n):
 
     return overall_prob, house_prob, senate_prob
 
+
+def find_prob_of_passing_all_bills(label_df):
+    """Find the probability that a bill will pass in each agency based on the predicted probabilities of each legislator's vote.
+    
+    Args:
+        label_df: a pandas dataframe loaded from label_pickle.pkl
+        
+    Returns:
+        all_bills_prob_passing_df: pandas dataframe with four columns: bill_id, overall_prob, house_prob and senate_prob
+    
+    """
+    all_bill_probs = []
+    for bill_id in label_df['bill_id'].unique():
+        overall_prob, house_prob, senate_prob = find_prob_of_bill_passing(label_df, bill_id)
+        row = [bill_id, overall_prob, house_prob, senate_prob]
+        all_bill_probs.append(row)
+    all_bills_prob_passing_df = pd.DataFrame(all_bill_probs, columns=['bill_id', 'overall_prob', 'house_prob', 'senate_prob'])
+    return all_bills_prob_passing_df
 
