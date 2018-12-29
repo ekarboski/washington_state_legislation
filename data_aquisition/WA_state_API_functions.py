@@ -13,7 +13,6 @@ def get_committee_data(biennium):
     """
 
     r = requests.get('http://wslwebservices.leg.wa.gov/CommitteeService.asmx/GetCommittees?biennium={}'.format(biennium))
-    r.text
     root = ET.fromstring(r.text)
 
     committee_info = []
@@ -45,7 +44,6 @@ def get_committee_member_data(biennium, agency, committee_name):
     """
     
     r = requests.get('http://wslwebservices.leg.wa.gov/CommitteeService.asmx/GetCommitteeMembers?biennium={}&agency={}&committeeName={}'.format(biennium, agency, committee_name))
-    r.text
     root = ET.fromstring(r.text)
 
     all_dcts = []
@@ -81,7 +79,6 @@ def get_bill_data(biennium, documentClass):
     """
     
     r = requests.get('http://wslwebservices.leg.wa.gov/LegislativeDocumentService.asmx/GetAllDocumentsByClass?biennium={}&documentClass={}'.format(biennium, documentClass))
-    r.text
     root = ET.fromstring(r.text)
     
     all_dcts = []
@@ -116,7 +113,6 @@ def get_rollcall_data(biennium, billNumber):
     """
 
     r = requests.get('http://wslwebservices.leg.wa.gov/LegislationService.asmx/GetRollCalls?biennium={}&billNumber={}'.format(biennium, billNumber))
-    r.text
     root = ET.fromstring(r.text)
     
     all_dcts = []
@@ -173,7 +169,6 @@ def get_sponsor_data(biennium, billId):
     """
     
     r = requests.get('http://wslwebservices.leg.wa.gov/LegislationService.asmx/GetSponsors?biennium={}&billId=string{}'.format(biennium, billId))
-    r.text
     root = ET.fromstring(r.text)
     
     all_dcts = []
