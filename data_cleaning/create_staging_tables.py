@@ -151,18 +151,17 @@ def create_staging_merged_initial_df_STEP_FOUR(staging_vote_df, staging_bill_df,
     staging_vote_df_with_unique_ids = staging_vote_df.merge(unique_vote_dates, how='left', on=['bill_unique', 'vote_date'])
     merged_initial_df = staging_vote_df_with_unique_ids.merge(staging_bill_df_with_unique_ids, how='left', on=['unique_id', 'bill_unique'])
 
-    # legislator_df['agency'] = legislator_df['agency'].apply(change_agency_to_int)
-    # merged_initial_df['sponsor_agency'] = merged_initial_df['sponsor_agency'].apply(change_agency_to_int)
-    # merged_initial_df['voting_agency'] = merged_initial_df['voting_agency'].apply(change_agency_to_int)
-    # merged_initial_df = merged_initial_df.merge(legislator_df, 
-    #                            how='left', 
-    #                            left_on=['voter_id', 'voting_agency'], 
-    #                            right_on=['id', 'agency'])
+    legislator_df['agency'] = legislator_df['agency'].apply(change_agency_to_int)
+    merged_initial_df['sponsor_agency'] = merged_initial_df['sponsor_agency'].apply(change_agency_to_int)
+    merged_initial_df = merged_initial_df.merge(legislator_df, 
+                               how='left', 
+                               left_on=['voter_id', 'voting_agency'], 
+                               right_on=['id', 'agency'])
     
-    # merged_initial_df = merged_initial_df.drop(['sequence_number', 'type', 
-    #                                   'voter_name', 'htm_last_modified_date', 'description', 
-    #                                   'bill_num_unique', 'bill_num', 'class'], axis = 1)
-    # merged_initial_df['party'] = merged_initial_df['party'].apply(change_party_word_to_int)
+    merged_initial_df = merged_initial_df.drop(['sequence_number', 'type', 
+                                      'voter_name', 'htm_last_modified_date', 'description', 
+                                      'bill_num_unique', 'bill_num', 'class'], axis = 1)
+    merged_initial_df['party'] = merged_initial_df['party'].apply(change_party_word_to_int)
     return merged_initial_df
 
 
@@ -192,32 +191,7 @@ def create_staging_bill_text_df_STEP_FIVE(merged_initial_df):
     return bill_text_scrape_df
 
 
-
-# def create_staging_merged_intermediate_df_STEP_SIX(merged_initial_df, legislator_df):
-#     """Create merged_final pandas dataframe. This dataframe contains all necessary data and is ready for 
-#     cleaning.
-
-#     Args:
-#         merged_initial_df: pandas dataframe loaded from wa_leg_staging database, merged_inital table
-#         legislator_df: pandas dataframe loaded from wa_leg_staging database, legislator table
-
-#     Returns:
-#         merged_intermediate: pandas dataframe
-#     """
-    
-#     legislator_df['agency'] = legislator_df['agency'].apply(change_agency_to_int)
-#     merged_intermediate = merged_initial_df.merge(legislator_df, 
-#                                how='left', 
-#                                left_on=['voter_id', 'voting_agency'], 
-#                                right_on=['id', 'agency'])
-    
-#     merged_intermediate = merged_intermediate.drop(['sequence_number', 'type', 
-#                                       'voter_name', 'htm_last_modified_date', 'description', 
-#                                       'bill_num_unique', 'bill_num', 'class'], axis = 1)
-#     return merged_intermediate
-
-
-def clean_merged_final_STEP_SEVEN(merged_initial_df, legislator_df):
+def clean_merged_final_STEP_SIX(merged_initial_df, legislator_df):
     """Create a merged_intermediate pandas dataframe and clean columns so that data type is correct. Feature
     engineer several new features such as is_primary_sponsor.
     
@@ -272,7 +246,7 @@ def clean_merged_final_STEP_SEVEN(merged_initial_df, legislator_df):
 
 
 
-def create_rep_score_STEP_EIGHT(staging_bill_df, legislator_df):
+def create_rep_score_STEP_SEVEN(staging_bill_df, legislator_df):
     """Create a dataframe with bill_num_unique, secondary_sponsors, primary_sponsor_id and rep_score.
     rep_score is a ratio of number of republican sponsors (primary and secondary) to total number of sponsors. 
 
